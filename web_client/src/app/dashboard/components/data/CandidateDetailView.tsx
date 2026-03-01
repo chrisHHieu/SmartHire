@@ -25,12 +25,11 @@ const CandidateDetailView: React.FC<Props> = ({ candidate }) => {
   };
 
   const renderEducation = () => {
-    // Use structured education data if available
     if (candidate.structured_education && candidate.structured_education.length > 0) {
       return (
         <Box mb={2}>
           <Typography variant="h6" gutterBottom>
-            Học Vấn
+            Education
           </Typography>
           {candidate.structured_education.map((edu, index) => (
             <Card key={index} variant="outlined" sx={{ mb: 1 }}>
@@ -43,12 +42,12 @@ const CandidateDetailView: React.FC<Props> = ({ candidate }) => {
                 </Typography>
                 {(edu.start_year || edu.end_year) && (
                   <Typography variant="body2" color="text.secondary">
-                    {edu.start_year} - {edu.end_year || "Hiện tại"}
+                    {edu.start_year} - {edu.end_year || "Present"}
                   </Typography>
                 )}
                 {edu.gpa && (
                   <Typography variant="body2" color="text.secondary">
-                    Điểm trung bình: {edu.gpa}
+                    GPA: {edu.gpa}
                   </Typography>
                 )}
               </CardContent>
@@ -58,12 +57,11 @@ const CandidateDetailView: React.FC<Props> = ({ candidate }) => {
       );
     }
 
-    // Fallback to legacy education data
     if (candidate.education && candidate.education.length > 0) {
       return (
         <Box mb={2}>
           <Typography variant="h6" gutterBottom>
-            Học Vấn
+            Education
           </Typography>
           {candidate.education.map((edu, index) => (
             <Card key={index} variant="outlined" sx={{ mb: 1 }}>
@@ -76,12 +74,12 @@ const CandidateDetailView: React.FC<Props> = ({ candidate }) => {
                 </Typography>
                 {(edu.start_year || edu.end_year) && (
                   <Typography variant="body2" color="text.secondary">
-                    {edu.start_year} - {edu.end_year || "Hiện tại"}
+                    {edu.start_year} - {edu.end_year || "Present"}
                   </Typography>
                 )}
                 {edu.gpa && (
                   <Typography variant="body2" color="text.secondary">
-                    Điểm trung bình: {edu.gpa}
+                    GPA: {edu.gpa}
                   </Typography>
                 )}
               </CardContent>
@@ -91,17 +89,15 @@ const CandidateDetailView: React.FC<Props> = ({ candidate }) => {
       );
     }
 
-    // Final fallback to string array
-    return renderStringArray(candidate.degree, "Học Vấn (Dữ liệu cũ)");
+    return renderStringArray(candidate.degree, "Education (Legacy Data)");
   };
 
   const renderExperience = () => {
-    // Use structured experience data if available
     if (candidate.structured_experience && candidate.structured_experience.length > 0) {
       return (
         <Box mb={2}>
           <Typography variant="h6" gutterBottom>
-            Kinh Nghiệm Làm Việc
+            Work Experience
           </Typography>
           {candidate.structured_experience.map((exp, index) => (
             <Card key={index} variant="outlined" sx={{ mb: 1 }}>
@@ -110,19 +106,19 @@ const CandidateDetailView: React.FC<Props> = ({ candidate }) => {
                   {exp.job_title}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {exp.company_name} {exp.location && `• ${exp.location}`}
+                  {exp.company_name} {exp.location && `- ${exp.location}`}
                 </Typography>
                 {(exp.start_date || exp.end_date) && (
                   <Typography variant="body2" color="text.secondary">
-                    {exp.start_date} - {exp.end_date || "Hiện tại"}
+                    {exp.start_date} - {exp.end_date || "Present"}
                   </Typography>
                 )}
                 {exp.responsibilities && (
                   <Box sx={{ mt: 1 }}>
                     <Typography variant="body2" fontWeight="medium" sx={{ mb: 0.5 }}>
-                      Trách Nhiệm Chính:
+                      Key Responsibilities:
                     </Typography>
-                    <Typography variant="body2" sx={{ whiteSpace: 'pre-line' }}>
+                    <Typography variant="body2" sx={{ whiteSpace: "pre-line" }}>
                       {exp.responsibilities}
                     </Typography>
                   </Box>
@@ -134,23 +130,21 @@ const CandidateDetailView: React.FC<Props> = ({ candidate }) => {
       );
     }
 
-    // Fallback to legacy experience data as string array
-    return renderStringArray(candidate.experience, "Kinh Nghiệm Làm Việc (Dữ liệu cũ)");
+    return renderStringArray(candidate.experience, "Work Experience (Legacy Data)");
   };
 
   const renderSkills = () => {
-    // Use structured skills data if available
     if (candidate.structured_skills && candidate.structured_skills.length > 0) {
       return (
         <Box mb={2}>
           <Typography variant="h6" gutterBottom>
-            Kỹ Năng
+            Skills
           </Typography>
           <Box display="flex" flexWrap="wrap" gap={1}>
             {candidate.structured_skills.map((skill, index) => (
               <Chip
                 key={index}
-                label={`${skill.name}${skill.level ? ` (${skill.level})` : ''}`}
+                label={`${skill.name}${skill.level ? ` (${skill.level})` : ""}`}
                 variant="outlined"
                 size="small"
               />
@@ -160,18 +154,17 @@ const CandidateDetailView: React.FC<Props> = ({ candidate }) => {
       );
     }
 
-    // Fallback to legacy skills data
     if (candidate.skills && candidate.skills.length > 0) {
       return (
         <Box mb={2}>
           <Typography variant="h6" gutterBottom>
-            Kỹ Năng
+            Skills
           </Typography>
           <Box display="flex" flexWrap="wrap" gap={1}>
             {candidate.skills.map((skill, index) => (
               <Chip
                 key={index}
-                label={`${skill.name}${skill.level ? ` (${skill.level})` : ''}`}
+                label={`${skill.name}${skill.level ? ` (${skill.level})` : ""}`}
                 variant="outlined"
                 size="small"
               />
@@ -181,22 +174,20 @@ const CandidateDetailView: React.FC<Props> = ({ candidate }) => {
       );
     }
 
-    // Final fallback to string arrays
     return (
       <>
-        {renderStringArray(candidate.technical_skill, "Kỹ Năng Chuyên Môn")}
-        {renderStringArray(candidate.soft_skill, "Kỹ Năng Mềm")}
+        {renderStringArray(candidate.technical_skill, "Technical Skills")}
+        {renderStringArray(candidate.soft_skill, "Soft Skills")}
       </>
     );
   };
 
   const renderCertifications = () => {
-    // Use structured certifications data if available
     if (candidate.structured_certifications && candidate.structured_certifications.length > 0) {
       return (
         <Box mb={2}>
           <Typography variant="h6" gutterBottom>
-            Chứng Chỉ
+            Certifications
           </Typography>
           {candidate.structured_certifications.map((cert, index) => (
             <Card key={index} variant="outlined" sx={{ mb: 1 }}>
@@ -206,7 +197,7 @@ const CandidateDetailView: React.FC<Props> = ({ candidate }) => {
                 </Typography>
                 {cert.issuer && (
                   <Typography variant="body2" color="text.secondary">
-                    Cấp bởi: {cert.issuer}
+                    Issued by: {cert.issuer}
                   </Typography>
                 )}
                 {(cert.issue_date || cert.expiration_date) && (
@@ -221,12 +212,11 @@ const CandidateDetailView: React.FC<Props> = ({ candidate }) => {
       );
     }
 
-    // Fallback to legacy certifications data
     if (candidate.certifications && candidate.certifications.length > 0) {
       return (
         <Box mb={2}>
           <Typography variant="h6" gutterBottom>
-            Chứng Chỉ
+            Certifications
           </Typography>
           {candidate.certifications.map((cert, index) => (
             <Card key={index} variant="outlined" sx={{ mb: 1 }}>
@@ -251,8 +241,7 @@ const CandidateDetailView: React.FC<Props> = ({ candidate }) => {
       );
     }
 
-    // Final fallback to string array
-    return renderStringArray(candidate.certificate, "Chứng Chỉ (Dữ liệu cũ)");
+    return renderStringArray(candidate.certificate, "Certifications (Legacy Data)");
   };
 
   const renderLanguages = () => {
@@ -261,13 +250,13 @@ const CandidateDetailView: React.FC<Props> = ({ candidate }) => {
     return (
       <Box mb={2}>
         <Typography variant="h6" gutterBottom>
-          Ngôn Ngữ
+          Languages
         </Typography>
         <Box display="flex" flexWrap="wrap" gap={1}>
           {candidate.languages.map((lang, index) => (
             <Chip
               key={index}
-              label={`${lang.name}${lang.proficiency ? ` (${lang.proficiency})` : ''}`}
+              label={`${lang.name}${lang.proficiency ? ` (${lang.proficiency})` : ""}`}
               variant="outlined"
               size="small"
             />
@@ -283,7 +272,7 @@ const CandidateDetailView: React.FC<Props> = ({ candidate }) => {
     return (
       <Box mb={2}>
         <Typography variant="h6" gutterBottom>
-          Giải Thưởng & Thành Tích
+          Awards & Achievements
         </Typography>
         {candidate.awards.map((award, index) => (
           <Card key={index} variant="outlined" sx={{ mb: 1 }}>
@@ -293,7 +282,7 @@ const CandidateDetailView: React.FC<Props> = ({ candidate }) => {
               </Typography>
               {award.year && (
                 <Typography variant="body2" color="text.secondary">
-                  Năm: {award.year}
+                  Year: {award.year}
                 </Typography>
               )}
               {award.description && (
@@ -310,43 +299,39 @@ const CandidateDetailView: React.FC<Props> = ({ candidate }) => {
 
   return (
     <Box p={3}>
-      {/* Basic Information */}
       <Box mb={3}>
         <Typography variant="h4" gutterBottom>
-          {candidate.candidate_name || candidate.full_name || "Ứng Viên Chưa Rõ Tên"}
+          {candidate.candidate_name || candidate.full_name || "Unnamed Candidate"}
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          📧 {candidate.email}
+          Email: {candidate.email}
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          📞 {candidate.phone_number || candidate.phone}
+          Phone: {candidate.phone_number || candidate.phone}
         </Typography>
         {candidate.address && (
           <Typography variant="body1" color="text.secondary">
-            📍 {candidate.address}
+            Address: {candidate.address}
           </Typography>
         )}
         {candidate.date_of_birth && (
           <Typography variant="body1" color="text.secondary">
-            🎂 {candidate.date_of_birth}
+            Date of Birth: {candidate.date_of_birth}
           </Typography>
         )}
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-          Tên CV: {candidate.cv_name}
+          CV File: {candidate.cv_name}
         </Typography>
       </Box>
 
       <Divider sx={{ mb: 3 }} />
 
-      {/* Summary */}
       {(candidate.summary || candidate.comment) && (
         <Box mb={3}>
           <Typography variant="h6" gutterBottom>
-            Tóm Tắt
+            Summary
           </Typography>
-          <Typography variant="body1">
-            {candidate.summary || candidate.comment}
-          </Typography>
+          <Typography variant="body1">{candidate.summary || candidate.comment}</Typography>
         </Box>
       )}
 
@@ -360,15 +345,14 @@ const CandidateDetailView: React.FC<Props> = ({ candidate }) => {
           {renderCertifications()}
           {renderLanguages()}
           {renderAwards()}
-          {renderStringArray(candidate.responsibility, "Trách Nhiệm")}
+          {renderStringArray(candidate.responsibility, "Responsibilities")}
         </Grid>
       </Grid>
 
-      {/* Job Recommendations */}
       {candidate.job_recommended && candidate.job_recommended.length > 0 && (
         <Box mt={3}>
           <Typography variant="h6" gutterBottom>
-            Việc Làm Đề Xuất
+            Recommended Jobs
           </Typography>
           <Box display="flex" flexWrap="wrap" gap={1}>
             {(Array.isArray(candidate.job_recommended)

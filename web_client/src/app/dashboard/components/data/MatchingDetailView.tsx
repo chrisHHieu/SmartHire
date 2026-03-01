@@ -1,6 +1,15 @@
 "use client";
 import React from "react";
-import { Chip, Divider, Typography, Box, Grid, Card, CardContent, LinearProgress } from "@mui/material";
+import {
+  Chip,
+  Divider,
+  Typography,
+  Box,
+  Grid,
+  Card,
+  CardContent,
+  LinearProgress,
+} from "@mui/material";
 
 interface Props {
   matching: MatchingDetailModel;
@@ -14,7 +23,9 @@ const MatchingDetailView: React.FC<Props> = ({ matching }) => {
     return "error";
   };
 
-  const getProgressColor = (score: number | null): "primary" | "secondary" | "error" | "info" | "success" | "warning" => {
+  const getProgressColor = (
+    score: number | null
+  ): "primary" | "secondary" | "error" | "info" | "success" | "warning" => {
     if (score === null || score === undefined) return "primary";
     if (score >= 80) return "success";
     if (score >= 60) return "warning";
@@ -33,9 +44,9 @@ const MatchingDetailView: React.FC<Props> = ({ matching }) => {
             <Typography variant="h6" component="div" mb={1}>
               {title}
             </Typography>
-            <Chip label="Không có dữ liệu" color="default" variant="outlined" size="small" />
+            <Chip label="No Data" color="default" variant="outlined" size="small" />
             <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-              Không có dữ liệu phân tích cho tiêu chí này.
+              No analysis data is available for this criterion.
             </Typography>
           </CardContent>
         </Card>
@@ -53,19 +64,9 @@ const MatchingDetailView: React.FC<Props> = ({ matching }) => {
               {title}
             </Typography>
             {score !== null && score !== undefined ? (
-              <Chip
-                label={`${score}%`}
-                color={getScoreColor(score)}
-                variant="filled"
-                size="small"
-              />
+              <Chip label={`${score}%`} color={getScoreColor(score)} variant="filled" size="small" />
             ) : (
-              <Chip
-                label="N/A"
-                color="default"
-                variant="outlined"
-                size="small"
-              />
+              <Chip label="N/A" color="default" variant="outlined" size="small" />
             )}
           </Box>
 
@@ -79,11 +80,11 @@ const MatchingDetailView: React.FC<Props> = ({ matching }) => {
           )}
 
           <Typography variant="body2" color="text.secondary">
-            <strong>Bình luận:</strong> {comment || "Không có phân tích"}
+            <strong>Comment:</strong> {comment || "No analysis available"}
           </Typography>
 
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            <strong>Điểm:</strong> {score !== null && score !== undefined ? score : "Không có"}
+            <strong>Score:</strong> {score !== null && score !== undefined ? score : "N/A"}
           </Typography>
         </CardContent>
       </Card>
@@ -99,39 +100,37 @@ const MatchingDetailView: React.FC<Props> = ({ matching }) => {
 
   return (
     <Box p={3}>
-      {/* Basic Information */}
       <Box mb={3}>
         <Typography variant="h5" gutterBottom color="primary">
-          Chi Tiết Phân Tích Matching Ứng Viên
+          Candidate Matching Analysis Details
         </Typography>
-        
+
         <Grid container spacing={2} sx={{ mb: 2 }}>
           <Grid item xs={12}>
             <Typography variant="body1">
-              <strong>Tên Ứng Viên:</strong> {matching.candidate_name || "Không có"}
+              <strong>Candidate Name:</strong> {matching.candidate_name || "N/A"}
             </Typography>
           </Grid>
           <Grid item xs={12}>
             <Typography variant="body1">
-              <strong>Số Điện Thoại Ứng Viên:</strong> {matching.phone_number || "Không có"}
+              <strong>Candidate Phone:</strong> {matching.phone_number || "N/A"}
             </Typography>
           </Grid>
           <Grid item xs={12}>
             <Typography variant="body1">
-              <strong>Tên CV Ứng Viên:</strong> {matching.cv_name || "Không có"}
+              <strong>Candidate CV:</strong> {matching.cv_name || "N/A"}
             </Typography>
           </Grid>
           <Grid item xs={12}>
             <Typography variant="body1">
-              <strong>Tên Công Việc:</strong> {matching.job_name || "Không có"}
+              <strong>Job Title:</strong> {matching.job_name || "N/A"}
             </Typography>
           </Grid>
         </Grid>
 
-        {/* Overall Score */}
         <Box sx={{ mb: 2 }}>
           <Typography variant="h6" gutterBottom>
-            Điểm Tương Thích
+            Match Score
           </Typography>
           <Box display="flex" alignItems="center" gap={2}>
             <LinearProgress
@@ -146,27 +145,28 @@ const MatchingDetailView: React.FC<Props> = ({ matching }) => {
           </Box>
         </Box>
 
-        {/* Summary */}
         <Box sx={{ mb: 2 }}>
           <Typography variant="h6" gutterBottom>
-            Tóm Tắt Phân Tích Ứng Viên
+            Candidate Summary
           </Typography>
-          <Typography variant="body1" sx={{ 
-            backgroundColor: 'grey.50', 
-            p: 2, 
-            borderRadius: 1,
-            border: '1px solid',
-            borderColor: 'grey.200'
-          }}>
-            {matching.summary_comment || "Không có tóm tắt"}
+          <Typography
+            variant="body1"
+            sx={{
+              backgroundColor: "grey.50",
+              p: 2,
+              borderRadius: 1,
+              border: "1px solid",
+              borderColor: "grey.200",
+            }}
+          >
+            {matching.summary_comment || "No summary available"}
           </Typography>
         </Box>
 
-        {/* Recommended Jobs */}
         {matching.job_recommended && matching.job_recommended.length > 0 && (
           <Box sx={{ mb: 2 }}>
             <Typography variant="h6" gutterBottom>
-              Công Việc Đề Xuất
+              Recommended Jobs
             </Typography>
             <Box display="flex" flexWrap="wrap" gap={1}>
               {matching.job_recommended.map((job, index) => (
@@ -179,26 +179,24 @@ const MatchingDetailView: React.FC<Props> = ({ matching }) => {
 
       <Divider sx={{ mb: 3 }} />
 
-      {/* Detailed Analysis */}
       <Typography variant="h5" gutterBottom color="primary">
-        Phân Tích Chi Tiết
+        Detailed Breakdown
       </Typography>
 
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
-          {renderScoreSection("Phân Tích Học Vấn", matching.degree)}
-          {renderScoreSection("Kinh Nghiệm", matching.experience)}
-          {renderScoreSection("Trách Nhiệm", matching.responsibility)}
+          {renderScoreSection("Education", matching.degree)}
+          {renderScoreSection("Experience", matching.experience)}
+          {renderScoreSection("Responsibilities", matching.responsibility)}
         </Grid>
         <Grid item xs={12} md={6}>
-          {renderScoreSection("Kỹ Năng Chuyên Môn", matching.technical_skill)}
-          {renderScoreSection("Kỹ Năng Mềm", matching.soft_skill)}
-          {renderScoreSection("Chứng Chỉ", matching.certificate)}
-          {matching.language && renderScoreSection("Kỹ Năng Ngôn Ngữ", matching.language)}
+          {renderScoreSection("Technical Skills", matching.technical_skill)}
+          {renderScoreSection("Soft Skills", matching.soft_skill)}
+          {renderScoreSection("Certifications", matching.certificate)}
+          {matching.language && renderScoreSection("Language Skills", matching.language)}
         </Grid>
       </Grid>
 
-      {/* AI Weight Analysis (if available) */}
       {matching.weight_analysis && (
         <Box mt={3}>
           <Divider sx={{ mb: 2 }} />
@@ -216,14 +214,16 @@ const MatchingDetailView: React.FC<Props> = ({ matching }) => {
                     <strong>Dynamic Weights:</strong>
                   </Typography>
                   <Box display="flex" flexWrap="wrap" gap={1} mt={1}>
-                    {Object.entries(matching.weight_analysis.dynamic_weights).map(([key, value]) => (
-                      <Chip 
-                        key={key} 
-                        label={`${key}: ${(value * 100).toFixed(1)}%`} 
-                        size="small" 
-                        variant="outlined"
-                      />
-                    ))}
+                    {Object.entries(matching.weight_analysis.dynamic_weights).map(
+                      ([key, value]) => (
+                        <Chip
+                          key={key}
+                          label={`${key}: ${(value * 100).toFixed(1)}%`}
+                          size="small"
+                          variant="outlined"
+                        />
+                      )
+                    )}
                   </Box>
                 </Box>
               )}
