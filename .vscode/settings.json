@@ -1,0 +1,4 @@
+{
+    "typescript.autoClosingTags": false,
+    "css.lint.unknownAtRules": "ignore"
+}

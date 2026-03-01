@@ -1,0 +1,60 @@
+version: "3"
+services:
+  mongo_db:
+    container_name: mongo_db
+    image: mongo:4.4
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root123456
+    volumes:
+      - mongo_data:/data/db
+    # ports:
+    #   - 27017:27017
+
+  api_server_service:
+    container_name: talent_matcher_api_server
+    image: chris123/talent_matcher_api_server
+    build:
+      context: ./api_server
+      dockerfile: Dockerfile
+    env_file:
+      - ./api_server/.env.local
+    restart: on-failure
+    volumes:
+      - ./api_server/logs:/app/logs
+    depends_on:
+      - mongo_db
+
+  web_client_service:
+    container_name: talent_matcher_web_client
+    image: chris123/talent_matcher_web_client
+    build:
+      context: ./web_client
+      dockerfile: Dockerfile
+    command: npm start
+
+  ai_engine:
+    container_name: ai_engine
+    image: chris123/ai_engine
+    build:
+      context: ./ai_engine
+      dockerfile: Dockerfile
+    volumes:
+      - ./ai_engine/logs:/app/logs
+      - ./ai_engine/candidate_cv:/app/candidate_cv
+
+  nginx_service:
+    container_name: talent_matcher_nginx
+    image: nginx:1.25.1-alpine
+    ports:
+      - 8080:80
+    volumes:
+      - ./nginx/develop.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/log:/var/log/nginx/
+    depends_on:
+      - api_server_service
+      - web_client_service
+
+volumes:
+  mongo_data:
