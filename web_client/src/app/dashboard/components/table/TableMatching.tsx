@@ -81,7 +81,7 @@ const TableMatching = (props: Props) => {
 
   // Define a state variable to store the selected job name
   const [selectedJobName, setSelectedJobName] =
-    useState<string>("Tên Vị Trí");
+    useState<string>("Position Name");
   const { mutate: processMatching } = useMachingData(selectedJobName);
   const { data, isLoading, isError, isPreviousData, refetch } =
     useMatchingPageData(selectedJobName, currentPage + 1, pageSize);
@@ -187,7 +187,7 @@ const TableMatching = (props: Props) => {
             </p>
             {row.original.summary_comment.length > 120 && (
               <button
-                className="mt-1 text-[10px] font-bold text-indigo-600 hover:text-indigo-800 uppercase tracking-widest"
+                className="mt-1 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 uppercase tracking-widest"
                 onClick={() => setShowFull(!showFull)}
               >
                 {showFull ? "Show Less" : "Read More"}
@@ -201,17 +201,17 @@ const TableMatching = (props: Props) => {
       header: "Match Score",
       cell: (props) => {
         const score = Number(props.getValue() || 0);
-        let statusColor = "text-rose-500 bg-rose-50 border-rose-100";
+        let statusColor = "text-rose-500 bg-rose-50 border-rose-100 dark:bg-rose-900/10 dark:border-rose-800/20 dark:text-rose-400";
         let barColor = "bg-rose-500";
 
         if (score >= 80) {
-          statusColor = "text-emerald-600 bg-emerald-50 border-emerald-100";
+          statusColor = "text-emerald-600 bg-emerald-50 border-emerald-100 dark:bg-emerald-900/10 dark:border-emerald-800/20 dark:text-emerald-400";
           barColor = "bg-emerald-500";
         } else if (score >= 60) {
-          statusColor = "text-indigo-600 bg-indigo-50 border-indigo-100";
+          statusColor = "text-indigo-600 bg-indigo-50 border-indigo-100 dark:bg-indigo-900/10 dark:border-indigo-800/20 dark:text-indigo-400";
           barColor = "bg-indigo-500";
         } else if (score >= 40) {
-          statusColor = "text-amber-600 bg-amber-50 border-amber-100";
+          statusColor = "text-amber-600 bg-amber-50 border-amber-100 dark:bg-amber-900/10 dark:border-amber-800/20 dark:text-amber-400";
           barColor = "bg-amber-500";
         }
 
@@ -249,7 +249,7 @@ const TableMatching = (props: Props) => {
             className="btn btn-secondary px-4 py-1.5 text-xs font-bold hover:shadow-md transition-all active:scale-95 flex items-center gap-1.5"
             onClick={() => handleDetail(row.original.id, selectedJobId)}
           >
-            <FiTarget className="text-indigo-600" />
+            <FiTarget className="text-indigo-600 dark:text-indigo-400" />
             <span>Analysis</span>
           </button>
         </div>
@@ -262,7 +262,7 @@ const TableMatching = (props: Props) => {
       <div className="px-4 pt-6 mt-2">
         <div className="font-medium text-xl p-4 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg shadow-sm">
           <h4 className="animate-pulse text-center text-blue-500">
-            Đang tải ...
+            Loading...
           </h4>
         </div>
       </div>
@@ -272,7 +272,7 @@ const TableMatching = (props: Props) => {
   if (isError) {
     return (
       <h4 className="text-center text-red-500 font-medium text-xl">
-        Lỗi hệ thống, vui lòng thử lại sau!
+        System error, please try again later!
       </h4>
     );
   }
@@ -287,7 +287,7 @@ const TableMatching = (props: Props) => {
           onError: (error: any) => {
             // console.log('Matching error:', error.response.status);
             setLoadingMatching(false);
-            toast.error("Xử lý matching ứng viên thất bại");
+            toast.error("Candidate matching failed");
           },
           onSuccess: async () => {
             setLoadingMatching(false);
@@ -295,7 +295,7 @@ const TableMatching = (props: Props) => {
             setInputs([]);
             refetch();
             reset();
-            toast.success("Xử lý matching ứng viên thành công");
+            toast.success("Candidate matching successful");
           },
         }
       );
@@ -353,14 +353,14 @@ const TableMatching = (props: Props) => {
       {
         onError: (error: any) => {
           console.log("Matching error:", error.response.status);
-          toast.error("Matching thất bại");
+          toast.error("Matching failed");
         },
         onSuccess: async () => {
           setIsOpenModalAdd(false);
           setInputs([]);
           refetch();
           reset();
-          toast.success("Matching thành công");
+          toast.success("Matching successful");
         },
       }
     );
@@ -575,7 +575,7 @@ const TableMatching = (props: Props) => {
                   </Dialog.Title>
                   <div className="mt-4">
                     <p className="text-sm text-gray-500">
-                      Bạn chắc chắn muốn xóa Job này không?
+                      Are you sure you want to delete this job?
                     </p>
                   </div>
 

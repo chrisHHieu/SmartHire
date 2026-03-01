@@ -10,8 +10,8 @@ const Jobs = (props: Props) => {
     <>
       {/* Set the title and meta description of the page */}
       <HeadMain
-        title="Việc Làm - Quản Lý | Bảng Điều Khiển - Jobfit"
-        description="Bảng Điều Khiển - Jobfit"
+        title="Jobs Management | SmartHire Dashboard"
+        description="SmartHire Dashboard"
       />
 
       {/* Main content of the FAQ page */}

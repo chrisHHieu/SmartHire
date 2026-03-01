@@ -136,6 +136,7 @@ interface CandidateDetailModel {
   certifications?: Certification[];
   languages?: Language[];
   awards?: Award[];
+  avatar_url?: string;
 }
 
 interface JobDetailModel {
@@ -230,6 +231,7 @@ interface CandidateModel {
   certifications?: Certification[];
   languages?: Language[];
   awards?: Award[];
+  avatar_url?: string;
 }
 
 interface CandidateResponseModel {

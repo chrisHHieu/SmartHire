@@ -23,8 +23,8 @@ const CandidatesPage = () => {
     <>
       {/* Set the title and meta description of the page */}
       <HeadMain
-        title="Ứng Viên - Quản Lý | Bảng Điều Khiển - Jobfit"
-        description="Bảng Điều Khiển - Jobfit"
+        title="Candidates - Management | SmartHire Dashboard"
+        description="SmartHire Dashboard"
       />
 
       {/* Main content of the CV management detail page */}

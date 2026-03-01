@@ -16,17 +16,17 @@ interface SubMenu {
 
 export const SidebarDataDashboard: Menu[] = [
   {
-    title: "Việc Làm",
+    title: "Jobs Management",
     link: "/dashboard/jobs",
     icon: <MdWork style={{ width: "24px", height: "24px" }} />,
   },
   {
-    title: "Ứng Viên",
+    title: "Candidates",
     link: "/dashboard/candidates",
     icon: <MdPeopleAlt style={{ width: "24px", height: "24px" }} />,
   },
   {
-    title: "Matching",
+    title: "Job Matching",
     link: "/dashboard/matching",
     icon: <MdPersonSearch style={{ width: "24px", height: "24px" }} />,
   },

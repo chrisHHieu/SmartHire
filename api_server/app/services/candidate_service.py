@@ -1,8 +1,14 @@
+import base64
 import hashlib
 import logging
+import os
 import time
 from datetime import datetime
 from math import ceil
+
+# Avatar storage directory
+AVATAR_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "avatars")
+os.makedirs(AVATAR_DIR, exist_ok=True)
 
 import config
 import requests
@@ -218,6 +224,10 @@ def process_upload_file(file):
     response_content["created_at"] = created_at
     response_content["filehash"] = filehash
 
+    # === Process avatar if available ===
+    avatar_base64 = response_content.pop("avatar_base64", None)
+    response_content["avatar_url"] = None  # Default: no avatar
+
     # Add to database
     try:
         collection = mongo.db.candidate
@@ -225,6 +235,23 @@ def process_upload_file(file):
 
         candidate_id = str(result.inserted_id)
         logger.info(f"Successfully saved candidate with ID: {candidate_id}")
+
+        # Save avatar file AFTER getting candidate_id
+        if avatar_base64:
+            try:
+                avatar_filename = f"{candidate_id}.png"
+                avatar_path = os.path.join(AVATAR_DIR, avatar_filename)
+                with open(avatar_path, "wb") as f:
+                    f.write(base64.b64decode(avatar_base64))
+
+                avatar_url = f"/api_server/avatars/{avatar_filename}"
+                collection.update_one(
+                    {"_id": result.inserted_id},
+                    {"$set": {"avatar_url": avatar_url}}
+                )
+                logger.info(f"Avatar saved: {avatar_path}")
+            except Exception as avatar_err:
+                logger.warning(f"Failed to save avatar: {avatar_err}")
 
         # Return success response with candidate info
         return {
@@ -289,6 +316,15 @@ def delete_candidate(candidate_id):
     if result.deleted_count == 1:
         # Clean matching
         mongo.db.matching.delete_many({"candidate_id": ObjectId(candidate_id)})
+
+        # Clean avatar file
+        avatar_path = os.path.join(AVATAR_DIR, f"{candidate_id}.png")
+        if os.path.exists(avatar_path):
+            try:
+                os.remove(avatar_path)
+                logger.info(f"Avatar deleted: {avatar_path}")
+            except Exception as e:
+                logger.warning(f"Failed to delete avatar: {e}")
 
         return {"message": "Document deleted successfully"}
     else:

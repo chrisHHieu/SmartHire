@@ -7,7 +7,7 @@ export default function Dashboard() {
   return (
     <>
       {/* Set the title and meta description of the page */}
-      <HeadMain title="Dashboard - Jobfit" description="Dashboard - Jobfit" />
+      <HeadMain title="SmartHire Dashboard" description="SmartHire Dashboard" />
 
       {/* Display the breadcrumb */}
       <BreadcrumbDashboard title="Dashboard" />

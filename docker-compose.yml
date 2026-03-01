@@ -23,6 +23,7 @@ services:
     restart: on-failure
     volumes:
       - ./api_server/logs:/app/logs
+      - ./api_server/avatars:/app/avatars
     depends_on:
       - mongo_db
 

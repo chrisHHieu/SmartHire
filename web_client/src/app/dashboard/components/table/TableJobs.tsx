@@ -192,7 +192,7 @@ const TableJobs = (props: Props) => {
       cell: (props) => (
         <div className="flex items-center justify-center gap-2 text-slate-500 dark:text-slate-400 font-medium text-xs">
           <FiCalendar className="opacity-70 text-slate-400 dark:text-slate-500" />
-          <span>{new Date(props.getValue()).toLocaleDateString('vi-VN')}</span>
+          <span>{new Date(props.getValue()).toLocaleDateString('en-US')}</span>
         </div>
       ),
     }),
@@ -240,7 +240,7 @@ const TableJobs = (props: Props) => {
   if (isError) {
     return (
       <h4 className="text-center text-red-500 font-medium text-xl">
-        Lỗi hệ thống, vui lòng thử lại sau!
+        System error, please try again later!
       </h4>
     );
   }
@@ -272,12 +272,12 @@ const TableJobs = (props: Props) => {
         onError: (error: any) => {
           console.log("Delete FAQ error:", error.response.status);
           setIsOpenModalDelete(false);
-          toast.error("Xóa công việc thất bại");
+          toast.error("Delete job failed");
         },
         onSuccess: async () => {
           setIsOpenModalDelete(false);
           refetch();
-          toast.success("Xóa công việc thành công");
+          toast.success("Delete job successfully");
         },
       }
     );
@@ -297,12 +297,12 @@ const TableJobs = (props: Props) => {
     };
 
     if (data.job_name.trim().length === 0) {
-      alert("Tên công việc là bắt buộc!");
+      alert("Job name is required!");
       return;
     }
 
     if (data.job_description.trim().length < 100) {
-      alert("Mô tả công việc quá ngắn!");
+      alert("Job description is too short!");
       return;
     }
     console.log(params);
@@ -315,7 +315,7 @@ const TableJobs = (props: Props) => {
         onError: (error: any) => {
           setLoading(false);
           console.log("Create New Job error:", error.response.status);
-          toast.error("Tạo công việc mới thất bại");
+          toast.error("Create new job failed");
         },
         onSuccess: async () => {
           setLoading(false);
@@ -323,7 +323,7 @@ const TableJobs = (props: Props) => {
           setInputs([]);
           refetch();
           reset();
-          toast.success("Tạo công việc mới thành công");
+          toast.success("Create new job successfully");
         },
       }
     );
@@ -355,7 +355,7 @@ const TableJobs = (props: Props) => {
         onError: (error: any) => {
           setLoading(false);
           console.log("Update FAQ error:", error.response.status);
-          toast.error("Cập nhật công việc thất bại");
+          toast.error("Update job failed");
         },
         onSuccess: async () => {
           setLoading(false);
@@ -363,7 +363,7 @@ const TableJobs = (props: Props) => {
           setInputs([]);
           refetch();
           reset();
-          toast.success("Cập nhật công việc thành công");
+          toast.success("Update job successfully");
         },
       }
     );
@@ -487,11 +487,11 @@ const TableJobs = (props: Props) => {
                     as="h3"
                     className="text-center text-lg font-medium leading-6 text-gray-900"
                   >
-                    Thông Báo
+                    Notification
                   </Dialog.Title>
                   <div className="mt-4">
                     <p className="text-sm text-gray-500">
-                      Bạn có chắc chắn muốn xóa công việc này không?
+                      Are you sure you want to delete this job?
                     </p>
                   </div>
 
@@ -501,14 +501,14 @@ const TableJobs = (props: Props) => {
                       className="mr-2 inline-flex justify-center rounded-md border border-transparent bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                       onClick={() => confirmDeleteFAQ()}
                     >
-                      Có
+                      Yes
                     </button>
                     <button
                       type="button"
                       className="inline-flex justify-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                       onClick={closeModal}
                     >
-                      Không
+                      No
                     </button>
                   </div>
                 </Dialog.Panel>
@@ -557,7 +557,7 @@ const TableJobs = (props: Props) => {
                     as="h3"
                     className="text-center text-lg font-medium leading-6 text-gray-900"
                   >
-                    Tạo Công Việc Mới
+                    Create New Job
                   </Dialog.Title>
                   <form
                     className="w-full"
@@ -566,12 +566,12 @@ const TableJobs = (props: Props) => {
                     <div className="grid gap-4 mb-4 sm:grid-cols-2 sm:gap-6 sm:mb-5 mt-8">
                       <div className="sm:col-span-2">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                          Tên Vị Trí
+                          Position Name
                         </label>
                         <input
                           type="text"
                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                          placeholder="Kỹ sư AI"
+                          placeholder="AI Engineer"
                           {...register("job_name")}
                         />
                       </div>
@@ -579,7 +579,7 @@ const TableJobs = (props: Props) => {
                     <div className="grid gap-4 mb-4 sm:grid-cols-2 sm:gap-6 sm:mb-5">
                       <div className="sm:col-span-2 h-72">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                          Mô Tả Công Việc
+                          Job Description
                         </label>
                         {/* <textarea
                           className="h-60 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 resize-none"
@@ -674,7 +674,7 @@ const TableJobs = (props: Props) => {
                             type="submit"
                             className="mr-2 inline-flex justify-center rounded-md border border-transparent bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                           >
-                            Có
+                            Yes
                           </button>
 
                           <button
@@ -682,7 +682,7 @@ const TableJobs = (props: Props) => {
                             className="inline-flex justify-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                             onClick={closeModal}
                           >
-                            Không
+                            No
                           </button>
                         </>
                       ) : (
@@ -691,7 +691,7 @@ const TableJobs = (props: Props) => {
                             disabled={true}
                             className="mr-2 inline-flex justify-center rounded-md border border-transparent bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-blue-500"
                           >
-                            Có
+                            Yes
                           </button>
 
                           <button
@@ -700,7 +700,7 @@ const TableJobs = (props: Props) => {
                             className="inline-flex justify-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-red-500"
                             onClick={closeModal}
                           >
-                            Không
+                            No
                           </button>
                         </>
                       )}
@@ -744,7 +744,7 @@ const TableJobs = (props: Props) => {
                     as="h3"
                     className="text-center text-lg font-medium leading-6 text-gray-900"
                   >
-                    Cập Nhật Công Việc
+                    Update Job
                   </Dialog.Title>
                   <form
                     className="w-full"
@@ -753,7 +753,7 @@ const TableJobs = (props: Props) => {
                     <div className="grid gap-4 mb-4 sm:grid-cols-2 sm:gap-6 sm:mb-5 mt-8">
                       <div className="sm:col-span-2">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                          Tên Vị Trí
+                          Position Name
                         </label>
                         <input
                           type="text"
@@ -766,7 +766,7 @@ const TableJobs = (props: Props) => {
                     <div className="grid gap-4 mb-4 sm:grid-cols-2 sm:gap-6 sm:mb-5">
                       <div className="sm:col-span-2">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                          Mô Tả Công Việc
+                          Job Description
                         </label>
                         <Controller
                           name="job_description"
@@ -859,7 +859,7 @@ const TableJobs = (props: Props) => {
                             type="submit"
                             className="mr-2 inline-flex justify-center rounded-md border border-transparent bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                           >
-                            Có
+                            Yes
                           </button>
 
                           <button
@@ -867,7 +867,7 @@ const TableJobs = (props: Props) => {
                             className="inline-flex justify-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                             onClick={closeModal}
                           >
-                            Không
+                            No
                           </button>
                         </>
                       ) : (
@@ -876,7 +876,7 @@ const TableJobs = (props: Props) => {
                             disabled={true}
                             className="mr-2 inline-flex justify-center rounded-md border border-transparent bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-blue-500"
                           >
-                            Có
+                            Yes
                           </button>
 
                           <button
@@ -885,7 +885,7 @@ const TableJobs = (props: Props) => {
                             className="inline-flex justify-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-red-500"
                             onClick={closeModal}
                           >
-                            Không
+                            No
                           </button>
                         </>
                       )}

@@ -78,12 +78,12 @@ const TableCandidates = (props2: Props) => {
         onError: async (error: any) => {
           console.log("Delete file error:", error.response.status);
           setIsOpenModalDelete(false);
-          toast.error("Xóa hồ sơ thất bại");
+          toast.error("Delete profile failed");
         },
         onSuccess: async () => {
           setIsOpenModalDelete(false);
           props2.refetch();
-          toast.success("Xóa hồ sơ thành công");
+          toast.success("Delete profile successful");
         },
       }
     );
@@ -104,9 +104,17 @@ const TableCandidates = (props2: Props) => {
       header: "Candidate",
       cell: ({ row }: { row: Row<any> }) => (
         <div className="flex items-center gap-3 text-left">
-          <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 shadow-sm">
-            <FiUser className="text-sm" />
-          </div>
+          {row.original.avatar_url ? (
+            <img
+              src={row.original.avatar_url}
+              alt={row.original.candidate_name}
+              className="w-10 h-10 rounded-full object-cover border border-slate-200 dark:border-slate-700 shadow-sm"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 shadow-sm">
+              <FiUser className="text-sm" />
+            </div>
+          )}
           <div className="flex flex-col">
             <span className="font-bold text-slate-900 dark:text-white leading-tight">{row.original.candidate_name}</span>
             <div className="flex items-center gap-1.5 mt-0.5">
@@ -267,12 +275,12 @@ const TableCandidates = (props2: Props) => {
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
-                    Xóa hồ sơ
+                    Delete Profile
                   </Dialog.Title>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">
-                      Bạn có chắc chắn muốn xóa hồ sơ này không? Hành động này
-                      không thể hoàn tác.
+                      Are you sure you want to delete this profile? This action
+                      cannot be undone.
                     </p>
                   </div>
 
@@ -282,14 +290,14 @@ const TableCandidates = (props2: Props) => {
                       className="inline-flex justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
                       onClick={closeModal}
                     >
-                      Hủy
+                      Cancel
                     </button>
                     <button
                       type="button"
                       className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
                       onClick={handleDeleteFile}
                     >
-                      Xóa
+                      Delete
                     </button>
                   </div>
                 </Dialog.Panel>

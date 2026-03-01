@@ -61,4 +61,5 @@ email-validator==2.1.0
 # OCR and file processing dependencies
 landingai-ade
 docx2txt==0.8
+pymupdf
 python-dateutil

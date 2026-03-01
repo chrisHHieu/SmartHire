@@ -36,6 +36,15 @@ def create_app(settings_module=None):
     # Cấu hình logging
     configure_logging(app)
 
+    # Serve avatar files via /avatars/<filename>
+    avatars_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'avatars')
+    os.makedirs(avatars_dir, exist_ok=True)
+
+    from flask import send_from_directory
+    @app.route('/avatars/<path:filename>')
+    def serve_avatar(filename):
+        return send_from_directory(avatars_dir, filename)
+
     # Đăng ký blueprint
     register_routing(app)
 

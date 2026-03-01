@@ -5,6 +5,7 @@ import { Menu, Transition } from "@headlessui/react";
 import { FaMoon, FaSun, FaSearch } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
+import { FiBriefcase } from "react-icons/fi";
 import { useGlobalContext } from "@/app/context/ContextProvider";
 
 const NavbarDashboard = () => {
@@ -48,9 +49,12 @@ const NavbarDashboard = () => {
               </svg>
             </button>
             {/* Logo */}
-            <Link href="/" className="flex ml-2 md:mr-24">
-              <span className="ml-2 self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
-                {/* Dashboard */}
+            <Link href="/" className="flex items-center ml-2 md:mr-24 gap-2">
+              <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200 dark:shadow-none">
+                <FiBriefcase className="text-lg" />
+              </div>
+              <span className="self-center text-2xl font-black tracking-tighter dark:text-white font-jakarta">
+                SmartHire
               </span>
             </Link>
             {/* Form Search */}

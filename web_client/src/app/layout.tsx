@@ -12,13 +12,10 @@ const roboto_mono = Roboto_Mono({
 });
 
 export const metadata = {
-  title: "AI Resume Ranking",
-  description: "AI Resume Ranking",
+  title: "SmartHire - AI Resume Ranking",
+  description: "Advanced AI Resume Ranking and Applicant Matching System",
   icons: {
-    icon: [],
-    shortcut: [],
-    apple: [],
-    other: [],
+    icon: "/favicon.ico",
   },
 };
 

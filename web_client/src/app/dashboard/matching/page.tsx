@@ -10,8 +10,8 @@ const Matching = (props: Props) => {
     <>
       {/* Set the title and meta description of the page */}
       <HeadMain
-        title="Kết nối ứng viên - Quản lý | Bảng điều khiển - Jobfit"
-        description="Bảng điều khiển - Jobfit"
+        title="Candidate Matching - Management | SmartHire Dashboard"
+        description="SmartHire Dashboard"
       />
 
       {/* Main content of the FAQ page */}

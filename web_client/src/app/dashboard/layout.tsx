@@ -4,30 +4,13 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiSearch, FiBell, FiPlus, FiCommand, FiHome, FiUsers, FiFilter, FiSun, FiMoon } from "react-icons/fi";
 import "./globals.css";
+import Link from "next/link";
+import { useGlobalContext } from "@/app/context/ContextProvider";
 
 const DashboardLayoutNew = (props: PropsWithChildren) => {
   const pathname = usePathname();
   const [showCommandPalette, setShowCommandPalette] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  // Initialize theme from localStorage on mount
-  React.useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") {
-      setIsDarkMode(true);
-    } else if (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      setIsDarkMode(true);
-    }
-  }, []);
-
-  // Update localStorage and document class when theme changes
-  React.useEffect(() => {
-    if (isDarkMode) {
-      localStorage.setItem("theme", "dark");
-    } else {
-      localStorage.setItem("theme", "light");
-    }
-  }, [isDarkMode]);
+  const { isDarkMode, toggleDarkMode } = useGlobalContext();
 
   const navItems = [
     { href: "/dashboard/jobs", label: "Jobs", icon: <FiHome /> },
@@ -45,7 +28,7 @@ const DashboardLayoutNew = (props: PropsWithChildren) => {
           <nav className="glass rounded-[20px] px-6 py-3 flex items-center justify-between shadow-xl border-white/50">
             {/* Left: Logo & Navigation */}
             <div className="flex items-center gap-10">
-              <a href="/dashboard/jobs" className="flex items-center gap-3 no-underline group">
+              <Link href="/dashboard/jobs" className="flex items-center gap-3 no-underline group hover:no-underline">
                 <div className="relative w-10 h-10 rounded-xl bg-slate-900 dark:bg-indigo-500 flex items-center justify-center shadow-md transition-all duration-300 group-hover:scale-105 overflow-hidden">
                   <svg className="w-5 h-5 text-white relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     {/* Candidate / Human silhouette */}
@@ -58,23 +41,23 @@ const DashboardLayoutNew = (props: PropsWithChildren) => {
                 <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-white font-jakarta">
                   SmartHire<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">.</span>
                 </span>
-              </a>
+              </Link>
 
               <div className="hidden md:flex items-center gap-1">
                 {navItems.map((item) => (
-                  <a
+                  <Link
                     key={item.href}
                     href={item.href}
                     className={`
-                    flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 no-underline
+                    flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 no-underline hover:no-underline
                     ${isActive(item.href)
                         ? "bg-slate-900 text-white shadow-lg"
-                        : "text-slate-600 hover:bg-slate-100/50 hover:text-slate-900"}
+                        : "text-slate-600 dark:text-slate-400 hover:bg-slate-100/50 hover:text-slate-900 dark:hover:text-white"}
                   `}
                   >
                     <span className="text-lg opacity-80">{item.icon}</span>
                     {item.label}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -84,16 +67,16 @@ const DashboardLayoutNew = (props: PropsWithChildren) => {
               {/* Search Trigger */}
               <button
                 onClick={() => setShowCommandPalette(true)}
-                className="hidden lg:flex items-center gap-3 px-4 py-2 bg-slate-100 hover:bg-slate-200/70 border border-slate-200 rounded-xl transition-all duration-200 group"
+                className="hidden lg:flex items-center gap-3 px-4 py-2 bg-slate-100 dark:bg-slate-800/50 hover:bg-slate-200/70 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl transition-all duration-200 group"
               >
-                <FiSearch className="text-slate-500 group-hover:text-slate-900" />
-                <span className="text-sm font-medium text-slate-500 group-hover:text-slate-700">Search...</span>
-                <kbd className="hidden xl:inline-flex h-5 items-center gap-1 rounded border border-white bg-white px-1.5 font-mono text-[10px] font-medium text-slate-500 opacity-100">
+                <FiSearch className="text-slate-500 group-hover:text-slate-900 dark:text-slate-400 dark:group-hover:text-slate-300" />
+                <span className="text-sm font-medium text-slate-500 group-hover:text-slate-700 dark:text-slate-400 dark:group-hover:text-slate-300">Search...</span>
+                <kbd className="hidden xl:inline-flex h-5 items-center gap-1 rounded border border-white dark:border-slate-700 bg-white dark:bg-slate-900 px-1.5 font-mono text-[10px] font-medium text-slate-500 dark:text-slate-400 opacity-100">
                   <span className="text-xs">⌘</span>K
                 </kbd>
               </button>
 
-              <div className="h-8 w-[1px] bg-slate-200 mx-2 hidden sm:block" />
+              <div className="h-8 w-[1px] bg-slate-200 dark:bg-slate-800 mx-2 hidden sm:block" />
 
               {/* Quick Actions */}
               <button className="btn btn-primary shadow-indigo-200 hidden sm:flex">
@@ -103,7 +86,7 @@ const DashboardLayoutNew = (props: PropsWithChildren) => {
 
               {/* Theme Toggle */}
               <button
-                onClick={() => setIsDarkMode(!isDarkMode)}
+                onClick={toggleDarkMode}
                 className="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group overflow-hidden"
               >
                 <div className="relative w-full h-full flex items-center justify-center">
@@ -126,13 +109,13 @@ const DashboardLayoutNew = (props: PropsWithChildren) => {
               </button>
 
               {/* Notifications */}
-              <button className="relative w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition-colors group">
-                <FiBell className="text-xl text-slate-600 group-hover:text-indigo-600" />
-                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
+              <button className="relative w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group">
+                <FiBell className="text-xl text-slate-600 dark:text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400" />
+                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900" />
               </button>
 
               {/* Profile */}
-              <button className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-900 text-white font-bold text-sm hover:scale-105 transition-transform shadow-lg shadow-slate-200">
+              <button className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-900 dark:bg-indigo-600 text-white font-bold text-sm hover:scale-105 transition-transform shadow-lg shadow-slate-200 dark:shadow-none">
                 AD
               </button>
             </div>

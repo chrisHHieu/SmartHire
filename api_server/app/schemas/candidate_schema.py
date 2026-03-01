@@ -83,6 +83,7 @@ class CandidateSchema(Schema):
     created_at = fields.Str()
     sql = fields.Int()
     office = fields.Int()
+    avatar_url = fields.Str(allow_none=True)
 
 
 class CandidatePageSchema(Schema):

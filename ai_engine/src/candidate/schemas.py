@@ -65,6 +65,9 @@ class Resume(BaseModel):
     comment: Optional[str] = Field(None, description="AI analysis and summary about the candidate's strengths and suitability")
     job_recommended: Optional[List[str]] = Field(None, description="Must AI-recommended job positions based on candidate's profile")
 
+    # Avatar (populated by file extractor, NOT by LLM)
+    avatar_base64: Optional[str] = Field(None, description="Base64 encoded PNG avatar image extracted from CV")
+
 
 # Legacy schema for backward compatibility
 class ResponseSchema(BaseModel):

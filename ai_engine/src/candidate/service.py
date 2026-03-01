@@ -32,22 +32,22 @@ file_extractor = FileExtractor()
 
 def read_cv_candidate(file_name):
     """
-    Extract text from CV file using advanced FileExtractor with OCR capabilities.
-    Migrated from main.py for better text extraction quality.
+    Extract text + avatar from CV file using advanced FileExtractor with OCR capabilities.
+    Returns dict with 'text' and 'avatar_base64' keys.
     """
     file_path = settings.CV_UPLOAD_DIR + file_name
 
     try:
-        # Use advanced extraction with OCR support
-        content = file_extractor.extract_and_clean_text(file_path)
+        # Use advanced extraction with OCR + avatar support
+        result = file_extractor.extract_and_clean_text(file_path)
         LOGGER.info(f"Successfully extracted text from {file_name}")
-        return content
+        return result
     except Exception as e:
         LOGGER.error(f"Error extracting text from {file_name}: {e}")
         raise ValueError(f"Failed to extract text from file: {file_name}")
 
 
-def analyse_candidate(cv_content):
+def analyse_candidate(cv_content, avatar_base64=None):
     start = time.time()
     LOGGER.info("Start analyse candidate")
 
@@ -80,6 +80,10 @@ def analyse_candidate(cv_content):
     else:
         # Fallback for dict response
         json_output = completion
+
+    # Inject avatar_base64 (from file extractor, not from LLM)
+    if avatar_base64:
+        json_output["avatar_base64"] = avatar_base64
 
     LOGGER.info("Done analyse candidate")
     LOGGER.info(f"Time analyse candidate: {time.time() - start}")
