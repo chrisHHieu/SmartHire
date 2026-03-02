@@ -213,5 +213,6 @@ migrations/
 # Ignore environment files
 *.env
 *.env.*
+!*.env.example
 backend/.env*
 frontend/.env*
