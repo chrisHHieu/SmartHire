@@ -25,11 +25,6 @@ WORKDIR /app
 # Cài uv (Copy binary từ builder stage)
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# ❗ Cài poppler-utils + tesseract cho OCR/PDF
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends poppler-utils tesseract-ocr && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
 # Copy virtual environment từ builder stage
 COPY --from=builder /app/.venv /app/.venv
 
