@@ -16,14 +16,16 @@ The project consists of 4 main services:
 1.  **`web_client`**: Frontend dashboard built with Next.js (React).
 2.  **`api_server`**: RESTful API Backend built with FastAPI.
 3.  **`ai_engine`**: High-performance AI service for OCR and LLM processing.
-4.  **`mongo_db`**: NoSQL database for structured candidate and job data.
-5.  **`nginx`**: Reverse proxy for traffic orchestration.
+4.  **`mcp_server`**: AI Agent interface (Model Context Protocol) for candidate analysis.
+5.  **`mongo_db`**: NoSQL database for structured candidate and job data.
+6.  **`nginx`**: Reverse proxy for traffic orchestration.
 
 ## 🔄 High-Level Workflow
 
 ```mermaid
 graph TD
     User((User)) -->|Uploads CV| web_client[Web Client]
+    User -->|Asks Questions| mcp_agent[AI Agent / MCP]
     web_client -->|API Request| api_server[API Server]
     api_server -->|Check Duplicate/Save| mongo_db[(MongoDB)]
     api_server -->|File + Task| ai_engine[AI Engine]
@@ -31,6 +33,7 @@ graph TD
     Llama -->|Structured Data| ai_engine
     ai_engine -->|Analysis Results| api_server
     api_server -->|Save Result| mongo_db
+    mcp_agent -->|Calls Tools| mongo_db
     api_server -->|Success Payload| web_client
 ```
 

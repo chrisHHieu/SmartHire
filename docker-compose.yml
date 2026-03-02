@@ -8,8 +8,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: root123456
     volumes:
       - mongo_data:/data/db
-    # ports:
-    #   - 27017:27017
+    ports:
+      - 27017:27017
 
   api_server_service:
     container_name: talent_matcher_api_server
