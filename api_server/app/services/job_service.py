@@ -1,34 +1,45 @@
+"""
+Job service - Business logic for job operations.
+Migrated from Flask to FastAPI (no Flask dependencies).
+"""
+
 import logging
+import os
 from datetime import datetime
 from math import ceil
 
-import config
 import requests
-from app.db import mongo
 from bson.objectid import ObjectId
-from flask_smorest import abort
+from fastapi import HTTPException
 from pytz import timezone
+
+from app.database import get_database
+
+# Analysis service URL
+ANALYSIS_SERVICE_URL = os.environ.get("ANALYSIS_SERVICE_URL", "http://localhost:7000")
 
 # Create logger for this module
 logger = logging.getLogger(__name__)
 
 
 def get_all_job():
-    collection = mongo.db.job
-    result = collection.find()
-
+    db = get_database()
+    collection = db.job
+    result = list(collection.find())
     return result
 
 
-def post_job(job_data):
+def post_job(job_data: dict):
     """
     Create new job with comprehensive Two-Stage AI analysis.
-    
+
     This function now:
     1. Calls analysis service which performs Two-Stage AI
     2. Receives job requirements + dynamic_weights + weight_analysis
     3. Stores everything in MongoDB for future matching operations
     """
+    db = get_database()
+
     job_data["job_name"] = job_data["job_name"].strip()
     job_data["job_description"] = job_data["job_description"].strip()
     created_at = datetime.now(timezone("Asia/Ho_Chi_Minh")).strftime(
@@ -40,13 +51,16 @@ def post_job(job_data):
     logger.info("=" * 80)
 
     # Call analysis service (now includes Two-Stage AI)
-    analysis_endpoint_url = f"{config.ANALYSIS_SERVICE_URL}/job/analyse"
+    analysis_endpoint_url = f"{ANALYSIS_SERVICE_URL}/job/analyse"
     response = requests.post(analysis_endpoint_url, json=job_data)
 
     # Check response status and return appropriate response
     if response.status_code != 200:
         logger.error(f"Failed to analyse job: {job_data['job_name']}")
-        abort(400, message=f"Fail to analyse job! Job name: {job_data['job_name']}")
+        raise HTTPException(
+            status_code=400,
+            detail=f"Fail to analyse job! Job name: {job_data['job_name']}",
+        )
 
     # Get the content of the response (includes requirements + weights)
     response_content = response.json()
@@ -67,7 +81,7 @@ def post_job(job_data):
 
     # Add to database (includes dynamic_weights and weight_analysis)
     try:
-        collection = mongo.db.job
+        collection = db.job
         result = collection.insert_one(response_content)
 
         job_id = str(result.inserted_id)
@@ -76,33 +90,29 @@ def post_job(job_data):
 
     except Exception as e:
         logger.error(f"Failed to save to database: {str(e)}")
-        abort(400, message="Upload document to Database failed!")
+        raise HTTPException(status_code=400, detail="Upload document to Database failed!")
 
     return response_content
 
 
-def get_list_job(job_data):
-    page_size = job_data["page_size"]
-    page = job_data["page"]
-
-    if page_size is None:
-        page_size = 10
-
-    if page is None:
-        page = 1
+def get_list_job(job_data: dict):
+    page_size = job_data.get("page_size") or 10
+    page = job_data.get("page") or 1
 
     try:
         results, total_page, total_job = filter_page(page_size=page_size, page=page)
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Can not get list file! Error: {str(e)}")
-        abort(400, message="Can not get list file!")
+        raise HTTPException(status_code=400, detail="Can not get list file!")
 
     return {"results": results, "total_page": total_page, "total_job": total_job}
 
 
-def filter_page(page_size=10, page=1):
-    # Connect to MongoDB and get the collection
-    collection = mongo.db.job
+def filter_page(page_size: int = 10, page: int = 1):
+    db = get_database()
+    collection = db.job
 
     # Count total documents in the collection
     total_job = collection.count_documents({})
@@ -112,7 +122,7 @@ def filter_page(page_size=10, page=1):
 
     # Validate page and page_size
     if page < 1 or page_size < 1:
-        abort(400, message="Page number or page size is invalid.")
+        raise HTTPException(status_code=400, detail="Page number or page size is invalid.")
 
     # Calculate skip and limit values for pagination
     skip = (page - 1) * page_size
@@ -123,30 +133,37 @@ def filter_page(page_size=10, page=1):
     return results, total_page, total_job
 
 
-def get_job(job_id):
-    collection = mongo.db.job
-    result = collection.find_one_or_404({"_id": ObjectId(job_id)})
+def get_job(job_id: str):
+    db = get_database()
+    collection = db.job
+    result = collection.find_one({"_id": ObjectId(job_id)})
+    if not result:
+        raise HTTPException(status_code=404, detail="Job not found")
     return result
 
 
-def update_job(job_data, job_id):
+def update_job(job_data: dict, job_id: str):
     """
     Update job and re-run Two-Stage AI analysis if job content changed.
-    
+
     If job_name or job_description changes, we need to:
     1. Re-analyze the job (including Two-Stage AI)
     2. Generate new dynamic weights
     3. Update everything in database
     4. Note: Existing matching results will use old weights until re-matched
     """
+    db = get_database()
+
     job_data["job_name"] = job_data["job_name"].strip()
     job_data["job_description"] = job_data["job_description"].strip()
     created_at = datetime.now(timezone("Asia/Ho_Chi_Minh")).strftime(
         "%Y-%m-%d %H:%M:%S"
     )
 
-    collection = mongo.db.job
-    job_exist = collection.find_one_or_404({"_id": ObjectId(job_id)})
+    collection = db.job
+    job_exist = collection.find_one({"_id": ObjectId(job_id)})
+    if not job_exist:
+        raise HTTPException(status_code=404, detail="Job not found")
 
     if (
         job_exist["job_name"] != job_data["job_name"]
@@ -158,13 +175,16 @@ def update_job(job_data, job_id):
         logger.info("=" * 80)
 
         # Re-analyze job (includes Two-Stage AI)
-        analysis_endpoint_url = f"{config.ANALYSIS_SERVICE_URL}/job/analyse"
+        analysis_endpoint_url = f"{ANALYSIS_SERVICE_URL}/job/analyse"
         response = requests.post(analysis_endpoint_url, json=job_data)
 
         # Check response status and return appropriate response
         if response.status_code != 200:
             logger.error(f"Failed to re-analyse job: {job_data['job_name']}")
-            abort(400, message=f"Fail to analyse job! Job name: {job_data['job_name']}")
+            raise HTTPException(
+                status_code=400,
+                detail=f"Fail to analyse job! Job name: {job_data['job_name']}",
+            )
 
         # Get the content of the response (includes new weights)
         response_content = response.json()
@@ -191,18 +211,18 @@ def update_job(job_data, job_id):
             logger.info("=" * 80)
             return {"message": "Document updated successfully"}
         else:
-            return abort("Document not found")
+            raise HTTPException(status_code=404, detail="Document not found")
 
     logger.info("No changes detected - skipping analysis")
     return {"message": "Document updated successfully"}
 
 
-def delete_job(job_id):
-    result = mongo.db.job.delete_one({"_id": ObjectId(job_id)})
+def delete_job(job_id: str):
+    db = get_database()
+    result = db.job.delete_one({"_id": ObjectId(job_id)})
     if result.deleted_count == 1:
         # Clean matching
-        mongo.db.matching.delete_many({"job_id": ObjectId(job_id)})
-
+        db.matching.delete_many({"job_id": ObjectId(job_id)})
         return {"message": "Document deleted successfully"}
     else:
-        return abort("Document not found!")
+        raise HTTPException(status_code=404, detail="Document not found!")

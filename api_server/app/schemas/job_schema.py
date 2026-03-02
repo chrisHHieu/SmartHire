@@ -1,45 +1,60 @@
-from marshmallow import Schema, fields
+"""
+Job Pydantic schemas for request/response validation.
+Replaces Marshmallow schemas with Pydantic models.
+"""
+
+from typing import Any
+
+from pydantic import BaseModel, Field
 
 
-class PlainJobSchema(Schema):
-    _id = fields.Str(dump_only=True)
-    job_name = fields.Str()
-    job_description = fields.Str()
-    created_at = fields.Str()
-    degree = fields.List(fields.Str())
-    experience = fields.List(fields.Str())
-    technical_skill = fields.List(fields.Str())
-    responsibility = fields.List(fields.Str())
-    soft_skill = fields.List(fields.Str())
-    certificate = fields.List(fields.Str())
-    language = fields.List(fields.Str())
-    dynamic_weights = fields.Dict()
-    weight_analysis = fields.Dict()
+# ─── Request schemas ──────────────────────────────────────
+
+class CreateUpdateJobSchema(BaseModel):
+    job_name: str
+    job_description: str
 
 
-class CreateUpdateJobSchema(Schema):
-    job_name = fields.Str(required=True)
-    job_description = fields.Str(required=True)
+class JobFilterPageSchema(BaseModel):
+    page_size: int | None = 10
+    page: int | None = 1
 
 
-class JobFilterPageSchema(Schema):
-    page_size = fields.Int(allow_none=True, required=True)
-    page = fields.Int(allow_none=True, required=True)
+# ─── Response schemas ─────────────────────────────────────
+
+class PlainJobSchema(BaseModel):
+    id: str | None = Field(None, alias="_id")
+    job_name: str | None = None
+    job_description: str | None = None
+    created_at: str | None = None
+    degree: list[str] | None = None
+    experience: list[str] | None = None
+    technical_skill: list[str] | None = None
+    responsibility: list[str] | None = None
+    soft_skill: list[str] | None = None
+    certificate: list[str] | None = None
+    language: list[str] | None = None
+    dynamic_weights: dict[str, Any] | None = None
+    weight_analysis: dict[str, Any] | None = None
+
+    model_config = {"populate_by_name": True}
 
 
-class JobPageSchema(Schema):
-    results = fields.List(fields.Nested(PlainJobSchema()))
-    total_page = fields.Int()
-    total_job = fields.Int()
+class JobPageSchema(BaseModel):
+    results: list[PlainJobSchema] = []
+    total_page: int = 0
+    total_job: int = 0
 
 
-class JobDetailSchema(Schema):
-    id = fields.Int(dump_only=True)
-    job_name = fields.Str(required=True)
-    education = fields.List(fields.Str())
-    certification = fields.List(fields.Str())
-    experiment = fields.List(fields.Str())
-    responsibilities = fields.List(fields.Str())
-    soft_skills = fields.List(fields.Str())
-    technical_skills = fields.List(fields.Str())
-    created_at = fields.Str(dump_only=True)
+class JobDetailSchema(BaseModel):
+    id: str | None = Field(None, alias="_id")
+    job_name: str | None = None
+    education: list[str] | None = None
+    certification: list[str] | None = None
+    experiment: list[str] | None = None
+    responsibilities: list[str] | None = None
+    soft_skills: list[str] | None = None
+    technical_skills: list[str] | None = None
+    created_at: str | None = None
+
+    model_config = {"populate_by_name": True}
