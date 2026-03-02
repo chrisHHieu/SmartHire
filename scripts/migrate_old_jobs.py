@@ -35,7 +35,7 @@ def get_mongo_client():
 
 def get_ai_engine_url():
     """Get analysis service URL from environment"""
-    return os.getenv("ANALYSIS_SERVICE_URL", "http://localhost:7000")
+    return os.getenv("AI_ENGINE_URL", "http://localhost:7000")
 
 
 def find_jobs_without_weights(db):
@@ -265,3 +265,4 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+

@@ -16,7 +16,7 @@ from pytz import timezone
 from app.database import get_database
 
 # Analysis service URL
-ANALYSIS_SERVICE_URL = os.environ.get("ANALYSIS_SERVICE_URL", "http://localhost:7000")
+AI_ENGINE_URL = os.environ.get("AI_ENGINE_URL", "http://localhost:7000")
 
 # Create logger for this module
 logger = logging.getLogger(__name__)
@@ -51,7 +51,7 @@ def post_job(job_data: dict):
     logger.info("=" * 80)
 
     # Call analysis service (now includes Two-Stage AI)
-    analysis_endpoint_url = f"{ANALYSIS_SERVICE_URL}/job/analyse"
+    analysis_endpoint_url = f"{AI_ENGINE_URL}/job/analyse"
     response = requests.post(analysis_endpoint_url, json=job_data)
 
     # Check response status and return appropriate response
@@ -175,7 +175,7 @@ def update_job(job_data: dict, job_id: str):
         logger.info("=" * 80)
 
         # Re-analyze job (includes Two-Stage AI)
-        analysis_endpoint_url = f"{ANALYSIS_SERVICE_URL}/job/analyse"
+        analysis_endpoint_url = f"{AI_ENGINE_URL}/job/analyse"
         response = requests.post(analysis_endpoint_url, json=job_data)
 
         # Check response status and return appropriate response
@@ -226,3 +226,4 @@ def delete_job(job_id: str):
         return {"message": "Document deleted successfully"}
     else:
         raise HTTPException(status_code=404, detail="Document not found!")
+

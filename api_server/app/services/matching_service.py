@@ -14,7 +14,7 @@ from fastapi import HTTPException
 from app.database import get_database
 
 # Analysis service URL
-ANALYSIS_SERVICE_URL = os.environ.get("ANALYSIS_SERVICE_URL", "http://localhost:7000")
+AI_ENGINE_URL = os.environ.get("AI_ENGINE_URL", "http://localhost:7000")
 
 # Create logger for this module
 logger = logging.getLogger(__name__)
@@ -65,7 +65,7 @@ def process_matching(matching_data: dict):
             f"Matching candidate & job: {candidate['candidate_name']} - {job['job_name']}"
         )
 
-        analysis_endpoint_url = f"{ANALYSIS_SERVICE_URL}/matching/analyse"
+        analysis_endpoint_url = f"{AI_ENGINE_URL}/matching/analyse"
         response = requests.post(analysis_endpoint_url, json=matching_analyse)
 
         # Check response status and return appropriate response
@@ -322,7 +322,7 @@ def process_matching_selective(matching_data: dict):
         )
 
         try:
-            analysis_endpoint_url = f"{ANALYSIS_SERVICE_URL}/matching/analyse"
+            analysis_endpoint_url = f"{AI_ENGINE_URL}/matching/analyse"
             response = requests.post(analysis_endpoint_url, json=matching_analyse)
 
             if response.status_code != 200:
@@ -397,3 +397,4 @@ def process_matching_selective(matching_data: dict):
         "total_matched": matched_count,
         "results": results_sorted,
     }
+

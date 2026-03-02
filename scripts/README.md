@@ -138,13 +138,13 @@ Set these before running scripts:
 export MONGO_URI="mongodb://root:root123456@localhost:27017/"
 
 # Analysis service URL
-export ANALYSIS_SERVICE_URL="http://localhost:7000"
+export AI_ENGINE_URL="http://localhost:7000"
 ```
 
 Or create a `.env` file:
 ```
 MONGO_URI=mongodb://root:root123456@localhost:27017/
-ANALYSIS_SERVICE_URL=http://localhost:7000
+AI_ENGINE_URL=http://localhost:7000
 ```
 
 ---
@@ -311,3 +311,4 @@ For issues or questions:
 
 **Last Updated:** 2024-02-24  
 **Maintainer:** Engineering Team
+
