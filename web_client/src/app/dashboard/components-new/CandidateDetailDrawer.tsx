@@ -251,9 +251,9 @@ export default function CandidateDetailDrawer({ candidate, onClose }: CandidateD
                           <div key={i} className="relative">
                             <div className="absolute -left-[33px] top-1.5 w-5 h-5 rounded-full border-4 border-white dark:border-slate-950 bg-indigo-600 shadow-sm" />
                             <div className="p-8 rounded-[2rem] bg-white dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 shadow-sm hover:border-indigo-200 dark:hover:border-indigo-900/50 transition-all duration-300">
-                              <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-4">
-                                <h4 className="text-lg font-bold text-slate-900 dark:text-white font-jakarta tracking-tight">{exp.job_title}</h4>
-                                <span className="text-[10px] font-bold py-1 px-3 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-full border border-indigo-100 dark:border-indigo-800/50 uppercase tracking-widest h-fit">
+                              <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
+                                <h4 className="text-lg font-bold text-slate-900 dark:text-white font-jakarta tracking-tight flex-1">{exp.job_title}</h4>
+                                <span className="text-[10px] font-bold py-1.5 px-3 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-full border border-indigo-100 dark:border-indigo-800/50 uppercase tracking-wider h-fit whitespace-nowrap flex-shrink-0 shadow-sm mt-1 md:mt-0">
                                   {exp.start_date} — {exp.end_date || 'Present'}
                                 </span>
                               </div>
@@ -318,15 +318,7 @@ export default function CandidateDetailDrawer({ candidate, onClose }: CandidateD
                               "{candidate.comment || "AI is still processing the detailed traits for this candidate..."}"
                             </p>
 
-                            <div className="mt-10 flex gap-4">
-                              <div className="bg-indigo-500/20 backdrop-blur-md border border-indigo-500/30 rounded-2xl p-4 px-6">
-                                <p className="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-1">Status</p>
-                                <div className="flex items-center gap-2">
-                                  <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                                  <span className="font-bold text-sm">Highly Compatible</span>
-                                </div>
-                              </div>
-                            </div>
+
                           </div>
                         </div>
 
