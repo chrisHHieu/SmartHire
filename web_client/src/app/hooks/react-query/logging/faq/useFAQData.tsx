@@ -14,6 +14,7 @@ import {
   deleteFAQAxios,
   addFAQAxios,
   updateFAQAxios,
+  processMatchingSelective,
 } from "@/app/services/logging/faq/faqService";
 
 export function useFAQData(
@@ -68,6 +69,12 @@ export function useDeleteFAQData(faqId: number): UseMutationResult<any> {
 export function useMachingData(jobName: string): UseMutationResult<any> {
   return useMutation(["matching-candidate"], () =>
     getMatchingCandidate(jobName)
+  );
+}
+
+export function useMatchingSelectiveData(): UseMutationResult<any, any, { candidate_ids: string[], job_id: string }> {
+  return useMutation(["matching-selective"], (params) =>
+    processMatchingSelective(params)
   );
 }
 

@@ -181,6 +181,7 @@ interface MatchingDetailModel {
   phone_number: string | null;
   job_recommended: string[] | null;
   cv_name: string | null;
+  avatar_url?: string | null;
   job_name: string | null;
   score: number | null;
   summary_comment: string | null;
@@ -305,6 +306,7 @@ interface JobMatchingModel {
   cv_name: string;
   score: string;
   summary_comment: string;
+  avatar_url?: string;
   matching_status: boolean;
 }
 

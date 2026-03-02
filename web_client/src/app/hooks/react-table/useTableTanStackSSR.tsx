@@ -8,6 +8,7 @@ import {
 type Props = {
   data: any[];
   columns: any[];
+  rowClassName?: (row: any) => string;
 };
 
 const UseTableTanStackSSR = (props: Props) => {
@@ -47,7 +48,7 @@ const UseTableTanStackSSR = (props: Props) => {
               {table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
-                  className="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors"
+                  className={`hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors ${props.rowClassName ? props.rowClassName(row.original) : ""}`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <td

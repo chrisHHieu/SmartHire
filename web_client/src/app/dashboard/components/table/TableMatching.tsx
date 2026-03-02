@@ -16,13 +16,14 @@ import {
   useDeleteFAQData,
   useAddFAQData,
   useUpdateFAQData,
+  useMatchingSelectiveData,
 } from "@/app/hooks/react-query/logging/faq/useFAQData";
 import { useMatchingDetailData } from "@/app/hooks/react-query/management/file/useFilesUploadData";
 import MatchingDetailDrawer from "../../components-new/MatchingDetailDrawer";
 
 import { BsChevronDown } from "react-icons/bs";
 import { MdLightbulbOutline, MdLightbulb } from "react-icons/md";
-import { FiTarget, FiChevronDown, FiZap, FiBox, FiActivity } from "react-icons/fi";
+import { FiTarget, FiChevronDown, FiZap, FiBox, FiActivity, FiCheckSquare, FiSquare, FiDatabase, FiUserCheck, FiInfo, FiLoader, FiUser, FiMail, FiX } from "react-icons/fi";
 
 function classNames(...classes: (string | undefined)[]) {
   return classes.filter(Boolean).join(" ");
@@ -60,6 +61,7 @@ const TableMatching = (props: Props) => {
   const [inputs, setInputs] = React.useState<InputItem[] | []>([]);
   const [CandidateId, setCandidateId] = React.useState<string>("id");
   const [selectedJobId, setSelectedJobId] = React.useState<string>("id");
+  const [selectedCandidateIds, setSelectedCandidateIds] = React.useState<string[]>([]);
   const candidateDetailQuery = useMatchingDetailData(
     CandidateId,
     selectedJobId
@@ -83,6 +85,7 @@ const TableMatching = (props: Props) => {
   const [selectedJobName, setSelectedJobName] =
     useState<string>("Position Name");
   const { mutate: processMatching } = useMachingData(selectedJobName);
+  const { mutate: processMatchingSelective } = useMatchingSelectiveData();
   const { data, isLoading, isError, isPreviousData, refetch } =
     useMatchingPageData(selectedJobName, currentPage + 1, pageSize);
 
@@ -119,6 +122,24 @@ const TableMatching = (props: Props) => {
 
     // Call refetch to fetch data for the newly selected job
     refetch();
+    setSelectedCandidateIds([]); // Clear selection when job changes
+  };
+
+  const toggleCandidateSelection = (candidateId: string) => {
+    setSelectedCandidateIds(prev =>
+      prev.includes(candidateId)
+        ? prev.filter(id => id !== candidateId)
+        : [...prev, candidateId]
+    );
+  };
+
+  const toggleAllSelection = () => {
+    if (!data?.results) return;
+    if (selectedCandidateIds.length === data.results.length) {
+      setSelectedCandidateIds([]);
+    } else {
+      setSelectedCandidateIds(data.results.map((c: any) => c.id));
+    }
   };
 
   const {
@@ -157,6 +178,33 @@ const TableMatching = (props: Props) => {
   const columnHelper = createColumnHelper<JobMatchingModel>();
   const columns = [
     columnHelper.display({
+      id: "selection",
+      header: () => (
+        <button
+          onClick={toggleAllSelection}
+          className="flex items-center justify-center hover:text-indigo-500 transition-colors"
+        >
+          {data?.results && selectedCandidateIds.length > 0 && selectedCandidateIds.length === data.results.length ? (
+            <FiCheckSquare className="text-lg text-indigo-500" />
+          ) : (
+            <FiSquare className="text-lg" />
+          )}
+        </button>
+      ),
+      cell: ({ row }: { row: Row<any> }) => (
+        <button
+          onClick={() => toggleCandidateSelection(row.original.id)}
+          className="flex items-center justify-center hover:text-indigo-500 transition-colors"
+        >
+          {selectedCandidateIds.includes(row.original.id) ? (
+            <FiCheckSquare className="text-lg text-indigo-500" />
+          ) : (
+            <FiSquare className="text-lg text-slate-300" />
+          )}
+        </button>
+      ),
+    }),
+    columnHelper.display({
       header: "#",
       cell: ({ row }: { row: Row<any> }) => (
         <span className="text-xs font-bold text-slate-400 font-mono">
@@ -167,9 +215,25 @@ const TableMatching = (props: Props) => {
     columnHelper.display({
       header: "Candidate",
       cell: ({ row }: { row: Row<any> }) => (
-        <div className="flex flex-col items-start gap-1">
-          <span className="font-bold text-slate-900 dark:text-white leading-none">{row.original.candidate_name}</span>
-          <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">{row.original.candidate_email}</span>
+        <div className="flex items-center gap-3 text-left">
+          {row.original.avatar_url ? (
+            <img
+              src={row.original.avatar_url}
+              alt={row.original.candidate_name}
+              className="w-10 h-10 rounded-full object-cover border border-slate-200 dark:border-slate-700 shadow-sm"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 shadow-sm">
+              <FiUser className="text-sm" />
+            </div>
+          )}
+          <div className="flex flex-col">
+            <span className="font-bold text-slate-900 dark:text-white leading-tight">{row.original.candidate_name}</span>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <FiMail className="text-[10px] text-slate-400 dark:text-slate-500" />
+              <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">{row.original.candidate_email}</span>
+            </div>
+          </div>
         </div>
       ),
     }),
@@ -281,24 +345,37 @@ const TableMatching = (props: Props) => {
     if (selectedJobName !== "Position Name") {
       setLoadingMatching(true);
 
-      processMatching(
-        {},
-        {
-          onError: (error: any) => {
-            // console.log('Matching error:', error.response.status);
-            setLoadingMatching(false);
-            toast.error("Candidate matching failed");
-          },
-          onSuccess: async () => {
-            setLoadingMatching(false);
-            setIsOpenModalAdd(false);
-            setInputs([]);
-            refetch();
-            reset();
-            toast.success("Candidate matching successful");
-          },
-        }
-      );
+      const isSelective = selectedCandidateIds.length > 0;
+
+      const onSuccess = async () => {
+        setLoadingMatching(false);
+        setIsOpenModalAdd(false);
+        setInputs([]);
+        setSelectedCandidateIds([]); // Clear selection on success
+        refetch();
+        reset();
+        toast.success(
+          isSelective
+            ? "Selected candidates matched successfully"
+            : "Candidate matching successful"
+        );
+      };
+
+      const onError = (error: any) => {
+        setLoadingMatching(false);
+        toast.error(
+          isSelective ? "Selected matching failed" : "Candidate matching failed"
+        );
+      };
+
+      if (isSelective) {
+        processMatchingSelective(
+          { candidate_ids: selectedCandidateIds, job_id: selectedJobId },
+          { onSuccess, onError }
+        );
+      } else {
+        processMatching({}, { onSuccess, onError });
+      }
     }
   };
 
@@ -458,8 +535,13 @@ const TableMatching = (props: Props) => {
       />
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight font-jakarta mb-1">
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight font-jakarta mb-1 flex items-center gap-3">
             Matching Analysis
+            {selectedCandidateIds.length > 0 && (
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300 animate-in fade-in zoom-in duration-300">
+                {selectedCandidateIds.length} SELECTED
+              </span>
+            )}
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Analyze and rank candidates based on job requirements.</p>
         </div>
@@ -507,33 +589,73 @@ const TableMatching = (props: Props) => {
             </Transition>
           </Menu>
 
-          <button
-            type="button"
-            className={`btn btn-primary px-6 shadow-indigo-100 ${loadingMatching ? "opacity-70 cursor-not-allowed" : ""
-              }`}
-            onClick={() => handleMatchingCandidate()}
-            disabled={loadingMatching}
-          >
-            {loadingMatching ? (
-              <FiActivity className="animate-spin" />
-            ) : (
-              <FiZap />
-            )}
-            <span>{loadingMatching ? "Processing..." : "Run Matching"}</span>
-          </button>
         </div>
       </div>
 
+      {/* Selection Stats Bar - Premium UI */}
+      {selectedCandidateIds.length > 0 && (
+        <Transition
+          show={selectedCandidateIds.length > 0}
+          enter="transition ease-out duration-300 transform"
+          enterFrom="translate-y-10 opacity-0"
+          enterTo="translate-y-0 opacity-100"
+          leave="transition ease-in duration-200 transform"
+          leaveFrom="translate-y-0 opacity-100"
+          leaveTo="translate-y-10 opacity-0"
+        >
+          <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[200] w-full max-w-2xl px-4">
+            <div className="bg-slate-900 border border-slate-700/50 rounded-2xl shadow-2xl p-2 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3 pl-4">
+                <div className="bg-indigo-500/20 text-indigo-400 p-2 rounded-lg">
+                  <FiCheckSquare className="text-xl" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-white text-sm font-bold">{selectedCandidateIds.length} Candidates Selected</span>
+                  <span className="text-slate-400 text-[10px] uppercase tracking-wider font-semibold">Ready for AI Matching</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 pr-2">
+                <button
+                  onClick={() => setSelectedCandidateIds([])}
+                  className="px-4 py-2 text-xs font-bold text-slate-400 hover:text-rose-400 transition-colors flex items-center gap-2"
+                >
+                  <FiSquare className="text-sm" />
+                  <span>Deselect</span>
+                </button>
+                <div className="w-px h-6 bg-slate-700/50 mx-1" />
+                <button
+                  onClick={() => handleMatchingCandidate()}
+                  disabled={loadingMatching}
+                  className="bg-indigo-500 hover:bg-indigo-400 text-white px-6 py-2.5 rounded-xl text-xs font-black flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
+                >
+                  {loadingMatching ? <FiLoader className="animate-spin" /> : <FiZap className="text-indigo-200" />}
+                  <span>RUN ANALYSIS ({selectedCandidateIds.length})</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </Transition>
+      )}
+
       <br />
       {/* Table */}
-      <UseTableTanStackSSR columns={columns} data={data.results} />
+      <UseTableTanStackSSR
+        columns={columns}
+        data={data?.results || []}
+        rowClassName={(row) =>
+          selectedCandidateIds.includes(row.id)
+            ? "bg-indigo-50/50 dark:bg-indigo-900/10 ring-1 ring-inset ring-indigo-500/20"
+            : ""
+        }
+      />
 
       {/* Pagination */}
       <TablePagination
         rowsPerPageOptions={[10, 20, 30]}
         component="div"
         className="dark:text-white"
-        count={data.total_matching}
+        count={data?.total_matching || 0}
         page={currentPage}
         onPageChange={handlePageOnchange}
         rowsPerPage={pageSize}

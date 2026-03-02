@@ -14,6 +14,7 @@ interface MatchingDetailProps {
     email: string | null;
     phone_number: string | null;
     cv_name: string | null;
+    avatar_url?: string | null;
     job_name: string | null;
     score: number | null;
     summary_comment: string | null;
@@ -122,26 +123,38 @@ export default function MatchingDetailDrawer({ matching, onClose }: MatchingDeta
           <div className="flex-1 overflow-hidden flex flex-col md:flex-row">
             {/* Left Sidebar - Candidate Summary (Bento Style) */}
             <aside className="w-full md:w-[320px] bg-slate-50/50 dark:bg-slate-900/30 border-r border-slate-100 dark:border-slate-800 p-8 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
-              <div className="text-center space-y-4">
-                <div className="mx-auto w-24 h-24 rounded-3xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-white text-4xl font-black shadow-xl">
-                  {matching.candidate_name?.charAt(0).toUpperCase() || <FiUser />}
-                </div>
-                <div>
-                  <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
-                    {matching.candidate_name || 'Anonymous'}
-                  </h2>
-                  <p className="text-xs font-bold text-indigo-500 dark:text-indigo-400 uppercase tracking-[0.2em] mt-2">
-                    Match Report
-                  </p>
-                </div>
+              <div className="relative group mx-auto">
+                <div className="absolute -inset-1 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-[2rem] blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                {matching.avatar_url ? (
+                  <img
+                    src={matching.avatar_url}
+                    alt={matching.candidate_name || ""}
+                    className="relative w-32 h-32 rounded-[2rem] object-cover border-4 border-white dark:border-slate-800 shadow-xl"
+                  />
+                ) : (
+                  <div className="relative w-32 h-32 rounded-[2rem] bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-white text-5xl font-black shadow-xl">
+                    {(matching.candidate_name || 'A').charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </div>
+
+              <div className="text-center space-y-1">
+                <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-tight font-jakarta">
+                  {matching.candidate_name || 'Anonymous'}
+                </h2>
+                <p className="text-sm font-bold text-indigo-500 dark:text-indigo-400 uppercase tracking-widest">
+                  Match Report
+                </p>
               </div>
 
               <div className="space-y-4 pt-4">
                 <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-white dark:border-slate-800 shadow-sm">
-                  <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">Applying for</p>
-                  <div className="flex items-center gap-2 text-sm font-black text-slate-800 dark:text-slate-200">
-                    <FiBriefcase className="text-indigo-500" />
-                    <span className="truncate">{matching.job_name || 'N/A'}</span>
+                  <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2">Applying for</p>
+                  <div className="flex items-start gap-2.5 text-sm font-bold text-slate-800 dark:text-slate-200">
+                    <div className="w-5 h-5 rounded-md bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <FiBriefcase className="text-indigo-500 text-xs" />
+                    </div>
+                    <span className="leading-snug">{matching.job_name || 'N/A'}</span>
                   </div>
                 </div>
 
@@ -167,8 +180,8 @@ export default function MatchingDetailDrawer({ matching, onClose }: MatchingDeta
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as TabType)}
                     className={`flex items-center gap-2 px-6 py-4 text-sm font-bold transition-all relative ${activeTab === tab.id
-                        ? 'text-indigo-600 dark:text-indigo-400'
-                        : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                      ? 'text-indigo-600 dark:text-indigo-400'
+                      : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
                       }`}
                   >
                     {tab.icon}

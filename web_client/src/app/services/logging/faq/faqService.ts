@@ -28,6 +28,11 @@ export const getMatchingCandidate = async (jobName: string) => {
   return data;
 };
 
+export const processMatchingSelective = async (params: { candidate_ids: string[], job_id: string }) => {
+  const { data } = await useAxios.post("/process-matching-selective", params);
+  return data;
+};
+
 export const getJobDetailAxios = async (jobId: string) => {
   const { data } = await useAxios.get(`/job/${jobId}`, {
     headers: {

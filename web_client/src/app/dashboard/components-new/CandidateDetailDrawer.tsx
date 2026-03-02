@@ -162,8 +162,8 @@ export default function CandidateDetailDrawer({ candidate, onClose }: CandidateD
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as TabType)}
                     className={`flex items-center gap-2 px-6 py-4 text-sm font-bold transition-all relative ${activeTab === tab.id
-                        ? 'text-indigo-600 dark:text-indigo-400'
-                        : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                      ? 'text-indigo-600 dark:text-indigo-400'
+                      : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
                       }`}
                   >
                     {tab.icon}
@@ -207,10 +207,19 @@ export default function CandidateDetailDrawer({ candidate, onClose }: CandidateD
                               <ul className="space-y-4">
                                 {candidate.structured_education.map((edu, i) => (
                                   <li key={i} className="border-l-2 border-slate-100 dark:border-slate-800 pl-4 py-1">
-                                    <p className="font-bold text-slate-900 dark:text-white uppercase text-xs tracking-tighter">
-                                      {edu.degree} {edu.field_of_study && `- ${edu.field_of_study}`}
-                                    </p>
-                                    <p className="text-sm font-medium text-slate-500">{edu.school_name}</p>
+                                    <div className="flex flex-col gap-1">
+                                      <p className="font-bold text-slate-900 dark:text-white text-sm tracking-tight leading-snug">
+                                        {edu.degree}
+                                      </p>
+                                      {edu.field_of_study && (
+                                        <p className="text-xs font-semibold text-indigo-500/80 dark:text-indigo-400/80 italic">
+                                          {edu.field_of_study}
+                                        </p>
+                                      )}
+                                      <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1">
+                                        {edu.school_name}
+                                      </p>
+                                    </div>
                                   </li>
                                 ))}
                               </ul>
@@ -241,14 +250,18 @@ export default function CandidateDetailDrawer({ candidate, onClose }: CandidateD
                         {candidate.structured_experience?.map((exp, i) => (
                           <div key={i} className="relative">
                             <div className="absolute -left-[33px] top-1.5 w-5 h-5 rounded-full border-4 border-white dark:border-slate-950 bg-indigo-600 shadow-sm" />
-                            <div className="p-6 rounded-3xl bg-slate-50/50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800">
-                              <span className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1 block">
-                                {exp.start_date} — {exp.end_date || 'Present'}
-                              </span>
-                              <h4 className="text-xl font-black text-slate-900 dark:text-white mb-1 font-jakarta">{exp.job_title}</h4>
-                              <p className="text-base font-bold text-slate-500 mb-4">{exp.company_name} {exp.location && `• ${exp.location}`}</p>
+                            <div className="p-8 rounded-[2rem] bg-white dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 shadow-sm hover:border-indigo-200 dark:hover:border-indigo-900/50 transition-all duration-300">
+                              <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-4">
+                                <h4 className="text-lg font-bold text-slate-900 dark:text-white font-jakarta tracking-tight">{exp.job_title}</h4>
+                                <span className="text-[10px] font-bold py-1 px-3 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-full border border-indigo-100 dark:border-indigo-800/50 uppercase tracking-widest h-fit">
+                                  {exp.start_date} — {exp.end_date || 'Present'}
+                                </span>
+                              </div>
+                              <p className="text-sm font-bold text-slate-600 dark:text-slate-300 flex items-center gap-2 mb-4">
+                                {exp.company_name} {exp.location && <span className="text-slate-300 dark:text-slate-700">•</span>} {exp.location}
+                              </p>
                               {exp.responsibilities && (
-                                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-line">
+                                <p className="text-[13px] text-slate-500 dark:text-slate-400 leading-relaxed whitespace-pre-line border-t border-slate-50 dark:border-slate-800 pt-4 mt-2">
                                   {exp.responsibilities}
                                 </p>
                               )}
