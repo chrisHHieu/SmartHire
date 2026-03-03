@@ -2,17 +2,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
 
 :root {
-  /* Primary Colors - Indigo/Blue (SaaS Premium) */
-  --primary-50: #f5f3ff;
-  --primary-100: #ede9fe;
-  --primary-200: #ddd6fe;
-  --primary-300: #c4b5fd;
-  --primary-400: #a78bfa;
-  --primary-500: #8b5cf6;
-  --primary-600: #7c3aed;
-  --primary-700: #6d28d9;
-  --primary-800: #5b21b6;
-  --primary-900: #4c1d95;
+  /* Primary Colors - Electric Indigo & Violet (AI-First Premium) */
+  --primary-50: #f0f4ff;
+  --primary-100: #e0e7ff;
+  --primary-200: #c7d2fe;
+  --primary-300: #a5b4fc;
+  --primary-400: #818cf8;
+  --primary-500: #6366f1;
+  /* Vibrant Indigo */
+  --primary-600: #4f46e5;
+  /* Deep Electric Indigo */
+  --primary-700: #4338ca;
+  --primary-800: #3730a3;
+  --primary-900: #312e81;
+  /* Deep Space Navy Blue */
 
   /* Neutral Colors - Slate (Professional) */
   --gray-50: #f8fafc;
@@ -26,15 +29,19 @@
   --gray-800: #1e293b;
   --gray-900: #0f172a;
 
-  /* Status Colors */
+  /* Status Colors (Electric Accents) */
   --success: #10b981;
-  --success-light: #ecfdf5;
+  /* Emerald */
+  --success-light: #f0fdf4;
   --warning: #f59e0b;
+  /* Amber */
   --warning-light: #fffbeb;
-  --error: #ef4444;
-  --error-light: #fef2f2;
-  --info: #3b82f6;
-  --info-light: #eff6ff;
+  --error: #f43f5e;
+  /* Rose */
+  --error-light: #fff1f2;
+  --info: #0ea5e9;
+  /* Electric Sky Blue */
+  --info-light: #f0f9ff;
 
   /* Shadows - Multi-layered for depth */
   --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
@@ -57,46 +64,29 @@
 }
 
 .dark {
-  /* Neutral Colors - Premium Deep Navy/Charcoal */
+  /* Deep Space Navy Theme */
   --gray-50: #020617;
-  /* Slate 950 */
-  --gray-100: #0f172a;
-  /* Slate 900 */
+  /* Space Black */
+  --gray-100: #0b1120;
+  /* Deep Navy */
   --gray-200: #1e293b;
   /* Slate 800 */
   --gray-300: #334155;
-  /* Slate 700 */
   --gray-400: #475569;
-  /* Slate 600 */
-  --gray-500: #94a3b8;
-  /* Slate 400 */
-  --gray-600: #cbd5e1;
-  /* Slate 300 */
-  --gray-700: #e2e8f0;
-  /* Slate 200 */
-  --gray-800: #f1f5f9;
-  /* Slate 100 */
+  --gray-500: #64748b;
+  --gray-600: #94a3b8;
+  --gray-700: #cbd5e1;
+  --gray-800: #e2e8f0;
   --gray-900: #f8fafc;
-  /* Slate 50 */
 
-  /* Mirror to slate for tailwind compatibility */
-  --slate-50: #020617;
-  --slate-100: #0f172a;
-  --slate-200: #1e293b;
-  --slate-300: #334155;
-  --slate-400: #475569;
-  --slate-500: #94a3b8;
-  --slate-600: #cbd5e1;
-  --slate-700: #e2e8f0;
-  --slate-800: #f1f5f9;
-  --slate-900: #f8fafc;
-
-  /* Darker Primary for better contrast */
-  --primary-50: #1e1b4b;
-  --primary-100: #312e81;
-  --primary-600: #818cf8;
-  /* Lighter indigo for dark mode */
-  --primary-700: #a5b4fc;
+  /* Vibrant Accents for Dark Mode */
+  --primary-500: #818cf8;
+  /* Softer Indigo for Dark */
+  --primary-600: #6366f1;
+  --primary-700: #4f46e5;
+  --info: #38bdf8;
+  --success: #34d399;
+  --error: #fb7185;
 
   /* Borders and Shadows in Dark Mode */
   --border-color: rgba(255, 255, 255, 0.08);
@@ -327,6 +317,7 @@ h6 {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--gray-400);
 }
+
 /* Premium Toast Styling (React-Toastify Override) - Bottom Right Optimization */
 .Toastify__toast-container--bottom-right {
   bottom: 2rem !important;
@@ -362,13 +353,16 @@ h6 {
 .Toastify__toast--success {
   border-left: 6px solid var(--success) !important;
 }
+
 .Toastify__toast--success .Toastify__toast-icon svg {
   fill: var(--success) !important;
 }
 
 .Toastify__toast--error {
-  border-left: 6px solid #f43f5e !important; /* Richer Rose */
+  border-left: 6px solid #f43f5e !important;
+  /* Richer Rose */
 }
+
 .Toastify__toast--error .Toastify__toast-icon svg {
   fill: #f43f5e !important;
 }
@@ -376,6 +370,7 @@ h6 {
 .Toastify__toast--info {
   border-left: 6px solid var(--primary-600) !important;
 }
+
 .Toastify__toast--info .Toastify__toast-icon svg {
   fill: var(--primary-600) !important;
 }
@@ -385,9 +380,17 @@ h6 {
   opacity: 0.6 !important;
 }
 
-.Toastify__progress-bar--success { background: var(--success) !important; }
-.Toastify__progress-bar--error { background: #f43f5e !important; }
-.Toastify__progress-bar--info { background: var(--primary-600) !important; }
+.Toastify__progress-bar--success {
+  background: var(--success) !important;
+}
+
+.Toastify__progress-bar--error {
+  background: #f43f5e !important;
+}
+
+.Toastify__progress-bar--info {
+  background: var(--primary-600) !important;
+}
 
 .Toastify__close-button {
   color: var(--gray-400) !important;
@@ -399,7 +402,7 @@ h6 {
   opacity: 1 !important;
   color: var(--gray-900) !important;
 }
+
 .dark .Toastify__close-button:hover {
   color: white !important;
 }
-
