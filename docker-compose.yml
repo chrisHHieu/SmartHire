@@ -40,6 +40,8 @@ services:
     build:
       context: ./ai_engine
       dockerfile: Dockerfile
+    env_file:
+      - ./ai_engine/.env
     volumes:
       - ./ai_engine/logs:/app/logs
       - ./ai_engine/candidate_cv:/app/candidate_cv
