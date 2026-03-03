@@ -6,6 +6,7 @@ import {
   FiBook, FiGlobe, FiCheckCircle, FiInfo, FiZap, FiUser,
   FiActivity, FiPieChart, FiBarChart2, FiMail, FiPhone, FiFileText
 } from "react-icons/fi";
+import { useGlobalContext } from "@/app/context/ContextProvider";
 
 interface MatchingDetailProps {
   matching: {
@@ -38,33 +39,139 @@ interface MatchingDetailProps {
 type TabType = 'overview' | 'analysis' | 'algorithm';
 
 export default function MatchingDetailDrawer({ matching, onClose }: MatchingDetailProps) {
+  const { language } = useGlobalContext();
   const [activeTab, setActiveTab] = useState<TabType>('overview');
+
+  const translations = {
+    EN: {
+      tabs: {
+        overview: "Overview",
+        analysis: "Analysis",
+        algorithm: "AI Logic"
+      },
+      sidebar: {
+        report: "Match Report",
+        applying: "Applying for",
+        email: "Email",
+        phone: "Phone",
+        cvSource: "CV Source",
+        anonymous: "Anonymous",
+        na: "N/A"
+      },
+      scoreLabels: {
+        strong: "Strong Match",
+        good: "Good Match",
+        fair: "Fair Match",
+        weak: "Weak Match"
+      },
+      overview: {
+        confidence: "Matching Confidence",
+        successRate: "Success Rate",
+        matchingDesc: "This candidate matches {score}% of your job profile requirements.",
+        aiInsightTitle: "AI Executive Insights",
+        processing: "Our AI engine is still generating the final report..."
+      },
+      analysis: {
+        title: "Gap Analysis",
+        subtitle: "In-depth breakdown",
+        noData: "No specific data found for this category."
+      },
+      algorithm: {
+        title: "AI Dynamic Weight Balancing",
+        balanced: "Balanced weighting model applied.",
+        accuracy: "Model Accuracy",
+        optimization: "Self-Optimization Active",
+        logicDesc: "Our AI dynamically assigns weights to JD criteria based on semantic importance. Technical competencies have been given higher priority for this match."
+      },
+      criteria: {
+        technical_skill: 'Technical Skills',
+        experience: 'Work Experience',
+        degree: 'Education',
+        soft_skill: 'Soft Skills',
+        responsibility: 'Responsibilities',
+        certificate: 'Certifications',
+        language: 'Languages'
+      }
+    },
+    VI: {
+      tabs: {
+        overview: "Tổng quan",
+        analysis: "Phân tích",
+        algorithm: "Phân tích AI"
+      },
+      sidebar: {
+        report: "Báo cáo phù hợp",
+        applying: "Ứng tuyển vị trí",
+        email: "Email",
+        phone: "Số điện thoại",
+        cvSource: "Nguồn CV",
+        anonymous: "Ẩn danh",
+        na: "N/A"
+      },
+      scoreLabels: {
+        strong: "Phù hợp cao",
+        good: "Phù hợp tốt",
+        fair: "Phù hợp trung bình",
+        weak: "Phù hợp thấp"
+      },
+      overview: {
+        confidence: "Độ tin cậy khớp nối",
+        successRate: "Tỉ lệ thành công",
+        matchingDesc: "Ứng viên này đáp ứng được {score}% các yêu cầu của vị trí tuyển dụng.",
+        aiInsightTitle: "Đánh giá chi tiết từ AI",
+        processing: "Hệ thống AI đang khởi tạo báo cáo cuối cùng..."
+      },
+      analysis: {
+        title: "Phân tích khoảng cách",
+        subtitle: "Phân bổ chi tiết",
+        noData: "Không tìm thấy dữ liệu cụ thể cho danh mục này."
+      },
+      algorithm: {
+        title: "Cân bằng trọng số AI linh hoạt",
+        balanced: "Đang áp dụng mô hình trọng số cân bằng.",
+        accuracy: "Độ chính xác mô hình",
+        optimization: "Tự động tối ưu đang hoạt động",
+        logicDesc: "AI của chúng tôi gán trọng số linh hoạt cho các tiêu chí JD dựa trên tầm quan trọng ngữ nghĩa. Năng lực kỹ thuật được ưu tiên cao hơn trong lần khớp này."
+      },
+      criteria: {
+        technical_skill: 'Kỹ năng chuyên môn',
+        experience: 'Kinh nghiệm làm việc',
+        degree: 'Học vấn',
+        soft_skill: 'Kỹ năng mềm',
+        responsibility: 'Trách nhiệm công việc',
+        certificate: 'Chứng chỉ',
+        language: 'Ngôn ngữ'
+      }
+    }
+  };
+
+  const t = translations[language];
   const score = matching.score ?? 0;
 
   const getScoreStatus = (val: number) => {
     if (val >= 80) return {
-      label: 'Strong Match',
+      label: t.scoreLabels.strong,
       color: 'text-emerald-600 dark:text-emerald-400',
       bg: 'bg-emerald-50 dark:bg-emerald-950/20',
       border: 'border-emerald-100 dark:border-emerald-800/30',
       bar: 'bg-emerald-500'
     };
     if (val >= 60) return {
-      label: 'Good Match',
+      label: t.scoreLabels.good,
       color: 'text-indigo-600 dark:text-indigo-400',
       bg: 'bg-indigo-50 dark:bg-indigo-950/20',
       border: 'border-indigo-100 dark:border-indigo-800/30',
       bar: 'bg-indigo-500'
     };
     if (val >= 40) return {
-      label: 'Fair Match',
+      label: t.scoreLabels.fair,
       color: 'text-amber-600 dark:text-amber-400',
       bg: 'bg-amber-50 dark:bg-amber-950/20',
       border: 'border-amber-100 dark:border-amber-800/30',
       bar: 'bg-amber-500'
     };
     return {
-      label: 'Weak Match',
+      label: t.scoreLabels.weak,
       color: 'text-rose-600 dark:text-rose-400',
       bg: 'bg-rose-50 dark:bg-rose-950/20',
       border: 'border-rose-100 dark:border-rose-800/30',
@@ -75,19 +182,19 @@ export default function MatchingDetailDrawer({ matching, onClose }: MatchingDeta
   const status = getScoreStatus(score);
 
   const criteria = [
-    { key: 'technical_skill', label: 'Technical Skills', icon: <FiTerminal />, data: matching.technical_skill },
-    { key: 'experience', label: 'Work Experience', icon: <FiBriefcase />, data: matching.experience },
-    { key: 'degree', label: 'Education', icon: <FiBook />, data: matching.degree },
-    { key: 'soft_skill', label: 'Soft Skills', icon: <FiTarget />, data: matching.soft_skill },
-    { key: 'responsibility', label: 'Responsibilities', icon: <FiCheckCircle />, data: matching.responsibility },
-    { key: 'certificate', label: 'Certifications', icon: <FiAward />, data: matching.certificate },
-    { key: 'language', label: 'Languages', icon: <FiGlobe />, data: matching.language },
+    { key: 'technical_skill', label: t.criteria.technical_skill, icon: <FiTerminal />, data: matching.technical_skill },
+    { key: 'experience', label: t.criteria.experience, icon: <FiBriefcase />, data: matching.experience },
+    { key: 'degree', label: t.criteria.degree, icon: <FiBook />, data: matching.degree },
+    { key: 'soft_skill', label: t.criteria.soft_skill, icon: <FiTarget />, data: matching.soft_skill },
+    { key: 'responsibility', label: t.criteria.responsibility, icon: <FiCheckCircle />, data: matching.responsibility },
+    { key: 'certificate', label: t.criteria.certificate, icon: <FiAward />, data: matching.certificate },
+    { key: 'language', label: t.criteria.language, icon: <FiGlobe />, data: matching.language },
   ].filter(c => c.data);
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: <FiActivity /> },
-    { id: 'analysis', label: 'Analysis', icon: <FiBarChart2 /> },
-    { id: 'algorithm', label: 'AI Logic', icon: <FiCpu /> },
+    { id: 'overview', label: t.tabs.overview, icon: <FiActivity /> },
+    { id: 'analysis', label: t.tabs.analysis, icon: <FiBarChart2 /> },
+    { id: 'algorithm', label: t.tabs.algorithm, icon: <FiCpu /> },
   ];
 
   return (
@@ -132,7 +239,7 @@ export default function MatchingDetailDrawer({ matching, onClose }: MatchingDeta
                     className="relative w-32 h-32 rounded-[2rem] object-cover border-4 border-white dark:border-slate-800 shadow-xl"
                   />
                 ) : (
-                  <div className="relative w-32 h-32 rounded-[2rem] bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-white text-5xl font-black shadow-xl">
+                  <div className="relative w-32 h-32 rounded-[2rem] bg-indigo-600 dark:bg-indigo-500 flex items-center justify-center text-white text-5xl font-black shadow-xl border-4 border-white dark:border-slate-800">
                     {(matching.candidate_name || 'A').charAt(0).toUpperCase()}
                   </div>
                 )}
@@ -140,28 +247,28 @@ export default function MatchingDetailDrawer({ matching, onClose }: MatchingDeta
 
               <div className="text-center space-y-1">
                 <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-tight font-jakarta">
-                  {matching.candidate_name || 'Anonymous'}
+                  {matching.candidate_name || t.sidebar.anonymous}
                 </h2>
                 <p className="text-sm font-bold text-indigo-500 dark:text-indigo-400 uppercase tracking-widest">
-                  Match Report
+                  {t.sidebar.report}
                 </p>
               </div>
 
               <div className="space-y-4 pt-4">
                 <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-white dark:border-slate-800 shadow-sm">
-                  <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2">Applying for</p>
+                  <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2">{t.sidebar.applying}</p>
                   <div className="flex items-start gap-2.5 text-sm font-bold text-slate-800 dark:text-slate-200">
                     <div className="w-5 h-5 rounded-md bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
                       <FiBriefcase className="text-indigo-500 text-xs" />
                     </div>
-                    <span className="leading-snug">{matching.job_name || 'N/A'}</span>
+                    <span className="leading-snug">{matching.job_name || t.sidebar.na}</span>
                   </div>
                 </div>
 
                 <div className="space-y-3 px-1">
-                  <DetailItem label="Email" value={matching.email || 'N/A'} icon={<FiMail />} />
-                  <DetailItem label="Phone" value={matching.phone_number || 'N/A'} icon={<FiPhone />} />
-                  <DetailItem label="CV Source" value={matching.cv_name || 'N/A'} icon={<FiFileText />} />
+                  <DetailItem label={t.sidebar.email} value={matching.email || t.sidebar.na} icon={<FiMail />} />
+                  <DetailItem label={t.sidebar.phone} value={matching.phone_number || t.sidebar.na} icon={<FiPhone />} />
+                  <DetailItem label={t.sidebar.cvSource} value={matching.cv_name || t.sidebar.na} icon={<FiFileText />} />
                 </div>
               </div>
 
@@ -225,18 +332,20 @@ export default function MatchingDetailDrawer({ matching, onClose }: MatchingDeta
                             </svg>
                             <div className="absolute inset-0 flex flex-col items-center justify-center">
                               <span className={`text-5xl font-black ${status.color}`}>{Math.round(score)}%</span>
-                              <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Success Rate</span>
+                              <span className="text-[10px] font-black uppercase tracking-widest opacity-60">{t.overview.successRate}</span>
                             </div>
                           </div>
 
                           <div className="flex-1 space-y-4 relative z-10 text-center md:text-left">
                             <div className={`inline-block px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${status.color} bg-white/50 dark:bg-slate-900/50 border border-current`}>
-                              Matching Confidence
+                              {t.overview.confidence}
                             </div>
                             <h3 className="text-4xl font-black text-slate-900 dark:text-white leading-tight font-jakarta">
                               {status.label}
                             </h3>
-                            <p className="text-base text-slate-600 dark:text-slate-400 font-medium leading-relaxed max-w-sm">This candidate matches {Math.round(score)}% of your job profile requirements.</p>
+                            <p className="text-base text-slate-600 dark:text-slate-400 font-medium leading-relaxed max-w-sm">
+                              {t.overview.matchingDesc.replace('{score}', Math.round(score).toString())}
+                            </p>
                           </div>
 
                           <FiZap className={`absolute -right-10 -bottom-10 text-[200px] opacity-5 rotate-12 transition-transform group-hover:scale-110 duration-1000 ${status.color}`} />
@@ -246,10 +355,10 @@ export default function MatchingDetailDrawer({ matching, onClose }: MatchingDeta
                         <div className="p-10 rounded-[3rem] bg-slate-900 text-white relative overflow-hidden shadow-2xl">
                           <FiInfo className="absolute top-10 right-10 text-indigo-500 text-7xl opacity-20" />
                           <h4 className="flex items-center gap-2 text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] mb-6">
-                            <FiCpu /> AI Executive Insights
+                            <FiCpu /> {t.overview.aiInsightTitle}
                           </h4>
                           <p className="text-xl font-medium leading-relaxed italic text-slate-200/90 relative z-10">
-                            "{matching.summary_comment || 'Our AI engine is still generating the final report...'}"
+                            "{matching.summary_comment || t.overview.processing}"
                           </p>
                         </div>
                       </div>
@@ -258,8 +367,8 @@ export default function MatchingDetailDrawer({ matching, onClose }: MatchingDeta
                     {activeTab === 'analysis' && (
                       <div className="space-y-10">
                         <div className="flex items-center justify-between">
-                          <SectionTitle title="Gap Analysis" icon={<FiBarChart2 />} />
-                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">In-depth breakdown</span>
+                          <SectionTitle title={t.analysis.title} icon={<FiBarChart2 />} />
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t.analysis.subtitle}</span>
                         </div>
 
                         <div className="grid grid-cols-1 gap-10">
@@ -297,7 +406,7 @@ export default function MatchingDetailDrawer({ matching, onClose }: MatchingDeta
                                     />
                                   </div>
                                   <div className="p-6 rounded-[2rem] bg-slate-50/50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-sm italic text-slate-600 dark:text-slate-300 leading-relaxed group-hover:border-indigo-200 dark:group-hover:border-indigo-900/30 transition-all">
-                                    {criterion.data!.comment || 'No specific data found for this category.'}
+                                    {criterion.data!.comment || t.analysis.noData}
                                   </div>
                                 </div>
                               </motion.div>
@@ -316,7 +425,7 @@ export default function MatchingDetailDrawer({ matching, onClose }: MatchingDeta
 
                           <div className="relative z-10 space-y-12">
                             <div>
-                              <h4 className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.4em] mb-8">AI Dynamic Weight Balancing</h4>
+                              <h4 className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.4em] mb-8">{t.algorithm.title}</h4>
                               <div className="flex flex-wrap gap-4">
                                 {matching.weight_analysis?.dynamic_weights ? (
                                   Object.entries(matching.weight_analysis.dynamic_weights).map(([key, value]) => (
@@ -325,13 +434,13 @@ export default function MatchingDetailDrawer({ matching, onClose }: MatchingDeta
                                       <span className="text-2xl font-black text-white">{((value as number) * 100).toFixed(0)}%</span>
                                     </div>
                                   ))
-                                ) : <p className="text-indigo-200/40 italic text-sm">Balanced weighting model applied.</p>}
+                                ) : <p className="text-indigo-200/40 italic text-sm">{t.algorithm.balanced}</p>}
                               </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 pt-10 border-t border-white/5 uppercase">
                               <div>
-                                <p className="text-[10px] font-black text-indigo-400 tracking-widest mb-3">Model Accuracy</p>
+                                <p className="text-[10px] font-black text-indigo-400 tracking-widest mb-3">{t.algorithm.accuracy}</p>
                                 <div className="text-6xl font-black text-white flex items-baseline gap-1">
                                   {((matching.weight_analysis?.ai_confidence || 0.88) * 100).toFixed(1)}
                                   <span className="text-2xl text-indigo-400">%</span>
@@ -342,7 +451,7 @@ export default function MatchingDetailDrawer({ matching, onClose }: MatchingDeta
                               </div>
                               <div className="p-8 rounded-[2.5rem] bg-indigo-900/30 border border-white/5 flex flex-col justify-center">
                                 <p className="text-xs text-indigo-100/70 leading-loose font-medium italic normal-case">
-                                  Our AI dynamically assigns weights to JD criteria based on semantic importance. Technical competencies have been given higher priority for this match.
+                                  {t.algorithm.logicDesc}
                                 </p>
                               </div>
                             </div>
@@ -351,7 +460,7 @@ export default function MatchingDetailDrawer({ matching, onClose }: MatchingDeta
 
                         <div className="p-10 rounded-[3rem] border-2 border-dashed border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center gap-4 text-center grayscale opacity-60">
                           <FiActivity className="text-slate-300 text-3xl animate-pulse" />
-                          <p className="text-slate-400 text-xs font-black uppercase tracking-widest">Self-Optimization Active</p>
+                          <p className="text-slate-400 text-xs font-black uppercase tracking-widest">{t.algorithm.optimization}</p>
                         </div>
                       </div>
                     )}
