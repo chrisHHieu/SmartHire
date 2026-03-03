@@ -7,6 +7,7 @@ import {
   FiHash, FiFileText, FiZap, FiCpu, FiLayout, FiActivity, FiTerminal,
   FiTrendingUp, FiLayers, FiShield
 } from "react-icons/fi";
+import { useGlobalContext } from "@/app/context/ContextProvider";
 
 interface JobDetailProps {
   job: {
@@ -34,26 +35,133 @@ interface JobDetailProps {
 type TabType = 'overview' | 'requirements' | 'competencies' | 'logic';
 
 export default function JobDetailDrawer({ job, onClose }: JobDetailProps) {
+  const { language } = useGlobalContext();
   const [activeTab, setActiveTab] = useState<TabType>('overview');
 
+  const translations = {
+    EN: {
+      tabs: {
+        overview: "Overview",
+        requirements: "Requirements",
+        competencies: "Competencies",
+        logic: "AI Logic"
+      },
+      weights: {
+        degree: 'Education',
+        experience: 'Work Experience',
+        technical_skill: 'Technical Skills',
+        responsibility: 'Responsibilities',
+        certificate: 'Certifications',
+        soft_skill: 'Soft Skills',
+        language: 'Languages'
+      },
+      sidebar: {
+        analysisTime: "Analysis Timestamp",
+        seniority: "Seniority",
+        industry: "Industry",
+        roleType: "Role Type",
+        engine: "SmartHire AI Engine",
+        analyzedLevel: "Analyzed Level",
+        generalSector: "General Sector",
+        dynamicModel: "Dynamic Model"
+      },
+      overview: {
+        title: "Full Description",
+        analysisActive: "Deep analysis active",
+        noDescription: "No job description text detected.",
+        strategyTitle: "AI Strategy Guardrails"
+      },
+      requirements: {
+        education: "Educational Foundation",
+        experience: "Work Experience",
+        certs: "Official Certifications"
+      },
+      competencies: {
+        technical: "Technical Toolbox",
+        responsibilities: "Core Responsibilities",
+        humanFactors: "Human Factors",
+        communication: "Communication"
+      },
+      logic: {
+        matrixTitle: "AI Weighted Decision Matrix",
+        modelHigh: "Model Integrity: High",
+        standardWeights: "Standard weight allocation used.",
+        successPredictors: "Success Predictors",
+        riskFactors: "Risk Factors Identified",
+        reasoningLogs: "Strategic Reasoning Logs",
+        optimizationLevel: "Dynamic AI Model Optimization Level",
+        reasoningSuffix: "Reasoning"
+      },
+      noSpecific: "System analysis found no specific entries."
+    },
+    VI: {
+      tabs: {
+        overview: "Tổng quan",
+        requirements: "Yêu cầu",
+        competencies: "Năng lực",
+        logic: "Phân tích AI"
+      },
+      weights: {
+        degree: 'Học vấn',
+        experience: 'Kinh nghiệm',
+        technical_skill: 'Kỹ năng chuyên môn',
+        responsibility: 'Trách nhiệm',
+        certificate: 'Chứng chỉ',
+        soft_skill: 'Kỹ năng mềm',
+        language: 'Ngôn ngữ'
+      },
+      sidebar: {
+        analysisTime: "Thời điểm phân tích",
+        seniority: "Cấp bậc",
+        industry: "Ngành nghề",
+        roleType: "Loại hình",
+        engine: "Hệ thống AI SmartHire",
+        analyzedLevel: "Cấp độ đã phân tích",
+        generalSector: "Lĩnh vực chung",
+        dynamicModel: "Mô hình linh hoạt"
+      },
+      overview: {
+        title: "Mô tả chi tiết",
+        analysisActive: "Đang phân tích chuyên sâu",
+        noDescription: "Không tìm thấy nội dung mô tả công việc.",
+        strategyTitle: "Chiến lược phân tích AI"
+      },
+      requirements: {
+        education: "Nền tảng học vấn",
+        experience: "Kinh nghiệm làm việc",
+        certs: "Chứng chỉ chuyên môn"
+      },
+      competencies: {
+        technical: "Kỹ năng chuyên môn",
+        responsibilities: "Trách nhiệm cốt lõi",
+        humanFactors: "Yếu tố con người",
+        communication: "Khả năng giao tiếp"
+      },
+      logic: {
+        matrixTitle: "Ma trận trọng số định điểm AI",
+        modelHigh: "Độ tin cậy mô hình: Cao",
+        standardWeights: "Đang sử dụng phân bổ trọng số tiêu chuẩn.",
+        successPredictors: "Chỉ số thành công",
+        riskFactors: "Các yếu tố rủi ro",
+        reasoningLogs: "Nhật ký suy luận chiến lược",
+        optimizationLevel: "Mức độ tối ưu AI linh hoạt",
+        reasoningSuffix: "Suy luận"
+      },
+      noSpecific: "Hệ thống không tìm thấy dữ liệu cụ thể."
+    }
+  };
+
+  const t = translations[language];
+
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: <FiInfo /> },
-    { id: 'requirements', label: 'Requirements', icon: <FiCheckCircle /> },
-    { id: 'competencies', label: 'Competencies', icon: <FiTarget /> },
-    { id: 'logic', label: 'AI Logic', icon: <FiCpu /> },
+    { id: 'overview', label: t.tabs.overview, icon: <FiInfo /> },
+    { id: 'requirements', label: t.tabs.requirements, icon: <FiCheckCircle /> },
+    { id: 'competencies', label: t.tabs.competencies, icon: <FiTarget /> },
+    { id: 'logic', label: t.tabs.logic, icon: <FiCpu /> },
   ];
 
   const getWeightLabel = (key: string) => {
-    const labels: Record<string, string> = {
-      degree: 'Education',
-      experience: 'Work Experience',
-      technical_skill: 'Technical Skills',
-      responsibility: 'Responsibilities',
-      certificate: 'Certifications',
-      soft_skill: 'Soft Skills',
-      language: 'Languages'
-    };
-    return labels[key] || key;
+    return (t.weights as any)[key] || key;
   };
 
   return (
@@ -114,23 +222,23 @@ export default function JobDetailDrawer({ job, onClose }: JobDetailProps) {
               <div className="space-y-6 pt-4 text-left">
                 <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-white dark:border-slate-800 shadow-sm">
                   <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-1.5 font-jakarta">
-                    <FiCalendar /> Analysis Timestamp
+                    <FiCalendar /> {t.sidebar.analysisTime}
                   </p>
                   <div className="text-sm font-black text-slate-800 dark:text-slate-200 uppercase">
-                    {new Date(job.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                    {new Date(job.created_at).toLocaleDateString(language === 'VI' ? 'vi-VN' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                   </div>
                 </div>
 
                 <div className="space-y-4 px-2 tracking-tight">
-                  <SidebarItem icon={<FiLayers className="text-indigo-500" />} label="Seniority" value={job.weight_analysis?.job_context?.role_characteristics?.seniority || "Analyzed Level"} />
-                  <SidebarItem icon={<FiGlobe className="text-blue-500" />} label="Industry" value={job.weight_analysis?.job_context?.industry?.primary || "General Sector"} />
-                  <SidebarItem icon={<FiShield className="text-rose-500" />} label="Role Type" value={job.weight_analysis?.job_context?.role_characteristics?.type?.replace('_', ' ') || "Dynamic Model"} />
+                  <SidebarItem icon={<FiLayers className="text-indigo-500" />} label={t.sidebar.seniority} value={job.weight_analysis?.job_context?.role_characteristics?.seniority || t.sidebar.analyzedLevel} />
+                  <SidebarItem icon={<FiGlobe className="text-blue-500" />} label={t.sidebar.industry} value={job.weight_analysis?.job_context?.industry?.primary || t.sidebar.generalSector} />
+                  <SidebarItem icon={<FiShield className="text-rose-500" />} label={t.sidebar.roleType} value={job.weight_analysis?.job_context?.role_characteristics?.type?.replace('_', ' ') || t.sidebar.dynamicModel} />
                 </div>
               </div>
 
               <div className="mt-auto pt-8 border-t border-slate-200 dark:border-slate-800">
                 <div className="flex items-center justify-between opacity-40">
-                  <span className="text-[9px] font-black uppercase tracking-widest">SmartHire AI Engine</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest">{t.sidebar.engine}</span>
                   <FiCpu className="text-indigo-500 text-lg" />
                 </div>
               </div>
@@ -145,8 +253,8 @@ export default function JobDetailDrawer({ job, onClose }: JobDetailProps) {
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as TabType)}
                     className={`flex items-center gap-2.5 px-6 pb-6 text-sm font-bold transition-all relative ${activeTab === tab.id
-                        ? 'text-indigo-600 dark:text-indigo-400'
-                        : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                      ? 'text-indigo-600 dark:text-indigo-400'
+                      : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
                       }`}
                   >
                     <span className={`text-lg transition-transform ${activeTab === tab.id ? 'scale-110' : 'opacity-60'}`}>
@@ -176,9 +284,9 @@ export default function JobDetailDrawer({ job, onClose }: JobDetailProps) {
                     {activeTab === 'overview' && (
                       <div className="space-y-10">
                         <div className="flex items-center justify-between">
-                          <SectionTitle title="Full Description" icon={<FiFileText />} />
+                          <SectionTitle title={t.overview.title} icon={<FiFileText />} />
                           <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-900 rounded-xl text-[9px] font-black uppercase text-slate-400 border border-slate-200 dark:border-slate-800">
-                            <FiTrendingUp /> Deep analysis active
+                            <FiTrendingUp /> {t.overview.analysisActive}
                           </div>
                         </div>
 
@@ -191,7 +299,7 @@ export default function JobDetailDrawer({ job, onClose }: JobDetailProps) {
                             ) : (
                               <div className="py-20 text-center flex flex-col items-center gap-4 opacity-50 font-inter">
                                 <FiFileText size={48} className="text-slate-300" />
-                                <p className="text-base italic">No job description text detected.</p>
+                                <p className="text-base italic">{t.overview.noDescription}</p>
                               </div>
                             )}
                           </div>
@@ -200,9 +308,12 @@ export default function JobDetailDrawer({ job, onClose }: JobDetailProps) {
                         <div className="p-10 rounded-[3rem] bg-slate-900 text-white shadow-2xl relative overflow-hidden border border-white/5">
                           <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 blur-[80px] rounded-full" />
                           <FiZap className="absolute top-10 right-10 text-indigo-400 opacity-20 text-7xl" />
-                          <h5 className="text-[10px] font-black uppercase tracking-[0.4em] text-indigo-400 mb-4 font-jakarta text-left">AI Strategy Guardrails</h5>
+                          <h5 className="text-[10px] font-black uppercase tracking-[0.4em] text-indigo-400 mb-4 font-jakarta text-left">{t.overview.strategyTitle}</h5>
                           <p className="text-xl font-medium leading-relaxed italic text-indigo-50/90 relative z-10 text-left">
-                            "The engine identifies semantic requirements in this position. Scoring priority is dynamically adjusted to ensure both technical expertise and organizational alignment."
+                            {language === 'VI'
+                              ? `"Hệ thống xác định các yêu cầu ngữ nghĩa trong vị trí này. Ưu tiên chấm điểm được điều chỉnh linh hoạt để đảm bảo cả chuyên môn kỹ thuật và sự phù hợp với tổ chức."`
+                              : `"The engine identifies semantic requirements in this position. Scoring priority is dynamically adjusted to ensure both technical expertise and organizational alignment."`
+                            }
                           </p>
                         </div>
                       </div>
@@ -210,16 +321,16 @@ export default function JobDetailDrawer({ job, onClose }: JobDetailProps) {
 
                     {activeTab === 'requirements' && (
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                        <SectionBento title="Educational Foundation" icon={<FiBook className="text-emerald-500" />}>
-                          <RequirementsList items={job.degree} iconColor="bg-emerald-500" />
+                        <SectionBento title={t.requirements.education} icon={<FiBook className="text-emerald-500" />}>
+                          <RequirementsList items={job.degree} iconColor="bg-emerald-500" t={t} />
                         </SectionBento>
 
-                        <SectionBento title="Work Experience" icon={<FiBriefcase className="text-amber-500" />}>
-                          <RequirementsList items={job.experience} iconColor="bg-amber-500" />
+                        <SectionBento title={t.requirements.experience} icon={<FiBriefcase className="text-amber-500" />}>
+                          <RequirementsList items={job.experience} iconColor="bg-amber-500" t={t} />
                         </SectionBento>
 
                         <div className="lg:col-span-2">
-                          <SectionBento title="Official Certifications" icon={<FiAward className="text-indigo-500" />}>
+                          <SectionBento title={t.requirements.certs} icon={<FiAward className="text-indigo-500" />}>
                             <div className="flex flex-wrap gap-3">
                               {job.certificate && job.certificate.length > 0 ? (
                                 job.certificate.map((cert, i) => (
@@ -227,7 +338,7 @@ export default function JobDetailDrawer({ job, onClose }: JobDetailProps) {
                                     {cert}
                                   </div>
                                 ))
-                              ) : <EmptyRequirement />}
+                              ) : <EmptyRequirement t={t} />}
                             </div>
                           </SectionBento>
                         </div>
@@ -236,7 +347,7 @@ export default function JobDetailDrawer({ job, onClose }: JobDetailProps) {
 
                     {activeTab === 'competencies' && (
                       <div className="space-y-12">
-                        <SectionDetailed title="Technical Toolbox" icon={<FiTerminal />}>
+                        <SectionDetailed title={t.competencies.technical} icon={<FiTerminal />}>
                           <div className="flex flex-wrap gap-3">
                             {job.technical_skill && job.technical_skill.length > 0 ? (
                               job.technical_skill.map((skill, i) => (
@@ -244,11 +355,11 @@ export default function JobDetailDrawer({ job, onClose }: JobDetailProps) {
                                   {skill}
                                 </span>
                               ))
-                            ) : <EmptyRequirement />}
+                            ) : <EmptyRequirement t={t} />}
                           </div>
                         </SectionDetailed>
 
-                        <SectionDetailed title="Core Responsibilities" icon={<FiClipboard />}>
+                        <SectionDetailed title={t.competencies.responsibilities} icon={<FiClipboard />}>
                           <div className="grid grid-cols-1 gap-5">
                             {job.responsibility && job.responsibility.length > 0 ? (
                               job.responsibility.map((item, i) => (
@@ -257,12 +368,12 @@ export default function JobDetailDrawer({ job, onClose }: JobDetailProps) {
                                   <p className="text-[15px] font-medium text-slate-700 dark:text-slate-300 leading-relaxed text-left">{item}</p>
                                 </div>
                               ))
-                            ) : <EmptyRequirement />}
+                            ) : <EmptyRequirement t={t} />}
                           </div>
                         </SectionDetailed>
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                          <SectionBento title="Human Factors" icon={<FiTarget className="text-rose-500" />}>
+                          <SectionBento title={t.competencies.humanFactors} icon={<FiTarget className="text-rose-500" />}>
                             <div className="flex flex-wrap gap-2.5">
                               {job.soft_skill && job.soft_skill.length > 0 ? (
                                 job.soft_skill.map((skill, i) => (
@@ -270,11 +381,11 @@ export default function JobDetailDrawer({ job, onClose }: JobDetailProps) {
                                     {skill}
                                   </span>
                                 ))
-                              ) : <EmptyRequirement />}
+                              ) : <EmptyRequirement t={t} />}
                             </div>
                           </SectionBento>
 
-                          <SectionBento title="Communication" icon={<FiGlobe className="text-blue-400" />}>
+                          <SectionBento title={t.competencies.communication} icon={<FiGlobe className="text-blue-400" />}>
                             <div className="flex flex-wrap gap-2.5">
                               {job.language && job.language.length > 0 ? (
                                 job.language.map((lang, i) => (
@@ -282,7 +393,7 @@ export default function JobDetailDrawer({ job, onClose }: JobDetailProps) {
                                     {lang}
                                   </span>
                                 ))
-                              ) : <EmptyRequirement />}
+                              ) : <EmptyRequirement t={t} />}
                             </div>
                           </SectionBento>
                         </div>
@@ -299,9 +410,9 @@ export default function JobDetailDrawer({ job, onClose }: JobDetailProps) {
                           <div className="relative z-10 space-y-12">
                             <div>
                               <div className="flex items-center justify-between mb-8">
-                                <h4 className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.4em]">AI Weighted Decision Matrix</h4>
+                                <h4 className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.4em]">{t.logic.matrixTitle}</h4>
                                 <div className="text-[10px] font-black text-indigo-300 uppercase px-3 py-1 bg-white/5 rounded-lg border border-white/5 font-mono">
-                                  Model Integrity: High
+                                  {t.logic.modelHigh}
                                 </div>
                               </div>
 
@@ -325,14 +436,14 @@ export default function JobDetailDrawer({ job, onClose }: JobDetailProps) {
                                       </div>
                                     )
                                   })
-                                ) : <p className="text-indigo-200/40 italic text-sm col-span-full">Standard weight allocation used.</p>}
+                                ) : <p className="text-indigo-200/40 italic text-sm col-span-full">{t.logic.standardWeights}</p>}
                               </div>
                             </div>
 
                             {/* Analysis Meta-Logs */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 border-t border-white/5 pt-10">
                               <div className="space-y-6">
-                                <h4 className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.4em]">Success Predictors</h4>
+                                <h4 className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.4em]">{t.logic.successPredictors}</h4>
                                 <div className="space-y-3">
                                   {job.weight_analysis?.job_context?.success_predictors?.map((item: string, i: number) => (
                                     <div key={i} className="flex items-center gap-3 text-sm font-medium text-emerald-100/70">
@@ -343,7 +454,7 @@ export default function JobDetailDrawer({ job, onClose }: JobDetailProps) {
                                 </div>
                               </div>
                               <div className="space-y-6">
-                                <h4 className="text-[10px] font-black text-rose-400 uppercase tracking-[0.4em]">Risk Factors Identified</h4>
+                                <h4 className="text-[10px] font-black text-rose-400 uppercase tracking-[0.4em]">{t.logic.riskFactors}</h4>
                                 <div className="space-y-3">
                                   {job.weight_analysis?.job_context?.risk_factors?.map((item: string, i: number) => (
                                     <div key={i} className="flex items-center gap-3 text-sm font-medium text-rose-100/70">
@@ -357,7 +468,7 @@ export default function JobDetailDrawer({ job, onClose }: JobDetailProps) {
 
                             {job.weight_analysis?.reasoning && (
                               <div className="space-y-6 pt-10 border-t border-white/5 text-left">
-                                <h4 className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.4em]">Strategic Reasoning Logs</h4>
+                                <h4 className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.4em]">{t.logic.reasoningLogs}</h4>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                   {Object.entries(job.weight_analysis.reasoning).map(([key, reason]) => (
                                     <div key={key} className="flex gap-4 p-5 rounded-2xl bg-indigo-900/40 border border-white/5 transition-all hover:bg-indigo-900/60">
@@ -365,7 +476,7 @@ export default function JobDetailDrawer({ job, onClose }: JobDetailProps) {
                                         <FiInfo size={14} />
                                       </div>
                                       <div className="space-y-1">
-                                        <p className="text-[9px] font-black text-indigo-400 uppercase tracking-tighter">{getWeightLabel(key)} Reasoning</p>
+                                        <p className="text-[9px] font-black text-indigo-400 uppercase tracking-tighter">{getWeightLabel(key)} {t.logic.reasoningSuffix}</p>
                                         <p className="text-xs text-indigo-50/80 leading-relaxed font-medium italic">
                                           "{reason}"
                                         </p>
@@ -380,7 +491,7 @@ export default function JobDetailDrawer({ job, onClose }: JobDetailProps) {
 
                         <div className="p-10 rounded-[3rem] border-2 border-dashed border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center gap-4 text-center grayscale opacity-40">
                           <FiZap className="text-slate-300 text-4xl" />
-                          <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest font-mono">Dynamic AI Model Optimization Level: {((job.weight_analysis?.confidence || 0.9) * 100).toFixed(0)}/100</p>
+                          <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest font-mono">{t.logic.optimizationLevel}: {((job.weight_analysis?.confidence || 0.9) * 100).toFixed(0)}/100</p>
                         </div>
                       </div>
                     )}
@@ -450,8 +561,8 @@ function SectionTitle({ title, icon }: { title: string, icon: React.ReactNode })
   );
 }
 
-function RequirementsList({ items, iconColor }: { items?: string[], iconColor: string }) {
-  if (!items || items.length === 0) return <EmptyRequirement />;
+function RequirementsList({ items, iconColor, t }: { items?: string[], iconColor: string, t: any }) {
+  if (!items || items.length === 0) return <EmptyRequirement t={t} />;
   return (
     <div className="space-y-4 text-left">
       {items.map((item, i) => (
@@ -464,6 +575,6 @@ function RequirementsList({ items, iconColor }: { items?: string[], iconColor: s
   );
 }
 
-function EmptyRequirement() {
-  return <p className="text-sm italic text-slate-400 font-medium py-2 text-left">System analysis found no specific entries.</p>;
+function EmptyRequirement({ t }: { t: any }) {
+  return <p className="text-sm italic text-slate-400 font-medium py-2 text-left">{t.noSpecific}</p>;
 }
