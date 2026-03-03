@@ -20,6 +20,7 @@ import {
 } from "@/app/hooks/react-query/logging/faq/useFAQData";
 import { useMatchingDetailData } from "@/app/hooks/react-query/management/file/useFilesUploadData";
 import MatchingDetailDrawer from "../../components-new/MatchingDetailDrawer";
+import { useGlobalContext } from "@/app/context/ContextProvider";
 
 import { BsChevronDown } from "react-icons/bs";
 import { MdLightbulbOutline, MdLightbulb } from "react-icons/md";
@@ -48,6 +49,7 @@ interface DataFormModel {
 }
 
 const TableMatching = (props: Props) => {
+  const { language } = useGlobalContext();
   const [currentPage, setCurrentPage] = React.useState<number>(0);
   const [pageSize, setPageSize] = React.useState<number>(10);
   const [isOpenDrawer, setIsOpenDrawer] = React.useState<boolean>(false);
@@ -83,7 +85,7 @@ const TableMatching = (props: Props) => {
 
   // Define a state variable to store the selected job name
   const [selectedJobName, setSelectedJobName] =
-    useState<string>("Position Name");
+    useState<string>(language === 'VI' ? "Tên vị trí" : "Position Name");
   const { mutate: processMatching } = useMachingData(selectedJobName);
   const { mutate: processMatchingSelective } = useMatchingSelectiveData();
   const { data, isLoading, isError, isPreviousData, refetch } =
@@ -174,6 +176,73 @@ const TableMatching = (props: Props) => {
     setIsOpenDrawer(true);
   };
 
+  const translations = {
+    EN: {
+      title: "Matching Analysis",
+      subtitle: "Analyze and rank candidates based on job requirements.",
+      selectedCount: "SELECTED",
+      selectJob: "Select Job Position",
+      candidatesSelected: "Candidates Selected",
+      readyForAI: "Ready for AI Matching",
+      deselect: "Deselect",
+      runAnalysis: "RUN ANALYSIS",
+      candidate: "Candidate",
+      aiSummary: "AI Summary",
+      matchScore: "Match Score",
+      status: "Status",
+      actions: "Actions",
+      analysisBtn: "Analysis",
+      noAnalysis: "No analysis",
+      readMore: "Read More",
+      showLess: "Show Less",
+      matched: "Matched",
+      pending: "Pending",
+      loading: "Loading...",
+      errorSystem: "System error, please try again later!",
+      deleteConfirm: "Are you sure you want to delete this job?",
+      notification: "Notification",
+      yes: "Yes",
+      no: "No",
+      matchingSuccess: "Candidate matching successful",
+      matchingError: "Candidate matching failed",
+      selectiveSuccess: "Selected candidates matched successfully",
+      selectiveError: "Selected matching failed"
+    },
+    VI: {
+      title: "Phân tích độ phù hợp",
+      subtitle: "Phân tích và xếp hạng ứng viên dựa trên yêu cầu công việc.",
+      selectedCount: "ĐÃ CHỌN",
+      selectJob: "Chọn vị trí tuyển dụng",
+      candidatesSelected: "Ứng viên được chọn",
+      readyForAI: "Sẵn sàng phân tích AI",
+      deselect: "Bỏ chọn",
+      runAnalysis: "CHẠY PHÂN TÍCH",
+      candidate: "Ứng viên",
+      aiSummary: "Tóm tắt từ AI",
+      matchScore: "Điểm phù hợp",
+      status: "Trạng thái",
+      actions: "Thao tác",
+      analysisBtn: "Xem phân tích",
+      noAnalysis: "Chưa có phân tích",
+      readMore: "Xem thêm",
+      showLess: "Thu gọn",
+      matched: "Đã phân tích",
+      pending: "Đang chờ",
+      loading: "Đang tải...",
+      errorSystem: "Lỗi hệ thống, vui lòng thử lại sau!",
+      deleteConfirm: "Bạn có chắc chắn muốn xoá vị trí này không?",
+      notification: "Thông báo",
+      yes: "Đồng ý",
+      no: "Huỷ bỏ",
+      matchingSuccess: "Phân tích ứng viên thành công",
+      matchingError: "Phân tích ứng viên thất bại",
+      selectiveSuccess: "Phân tích các ứng viên đã chọn thành công",
+      selectiveError: "Phân tích các ứng viên đã chọn thất bại"
+    }
+  };
+
+  const t = translations[language];
+
   // Column Definitions - Premium Refactoring
   const columnHelper = createColumnHelper<JobMatchingModel>();
   const columns = [
@@ -213,7 +282,7 @@ const TableMatching = (props: Props) => {
       ),
     }),
     columnHelper.display({
-      header: "Candidate",
+      header: t.candidate,
       cell: ({ row }: { row: Row<any> }) => (
         <div className="flex items-center gap-3 text-left">
           {row.original.avatar_url ? (
@@ -238,10 +307,10 @@ const TableMatching = (props: Props) => {
       ),
     }),
     columnHelper.accessor("summary_comment", {
-      header: "AI Summary",
+      header: t.aiSummary,
       cell: ({ row }: { row: Row<any> }) => {
         const [showFull, setShowFull] = React.useState(false);
-        if (!row.original.summary_comment) return <span className="text-slate-300 italic text-xs">No analysis</span>;
+        if (!row.original.summary_comment) return <span className="text-slate-300 italic text-xs">{t.noAnalysis}</span>;
 
         const content = showFull ? row.original.summary_comment : row.original.summary_comment.slice(0, 120);
         return (
@@ -254,7 +323,7 @@ const TableMatching = (props: Props) => {
                 className="mt-1 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 uppercase tracking-widest"
                 onClick={() => setShowFull(!showFull)}
               >
-                {showFull ? "Show Less" : "Read More"}
+                {showFull ? t.showLess : t.readMore}
               </button>
             )}
           </div>
@@ -262,7 +331,7 @@ const TableMatching = (props: Props) => {
       },
     }),
     columnHelper.accessor("score", {
-      header: "Match Score",
+      header: t.matchScore,
       cell: (props) => {
         const score = Number(props.getValue() || 0);
         let statusColor = "text-rose-500 bg-rose-50 border-rose-100 dark:bg-rose-900/10 dark:border-rose-800/20 dark:text-rose-400";
@@ -295,18 +364,18 @@ const TableMatching = (props: Props) => {
       },
     }),
     columnHelper.display({
-      header: "Status",
+      header: t.status,
       cell: ({ row }: { row: Row<any> }) => {
         const isMatched = !!row.original.matching_status;
         return (
-          <span className={`badge ${isMatched ? 'badge-success' : 'badge-warning'} shadow-sm`}>
-            {isMatched ? "Matched" : "Pending"}
+          <span className={`badge ${isMatched ? 'badge-success' : 'badge-warning'} shadow-sm whitespace-nowrap px-4 py-1`}>
+            {isMatched ? t.matched : t.pending}
           </span>
         );
       },
     }),
     columnHelper.display({
-      header: "Actions",
+      header: t.actions,
       cell: ({ row }: { row: Row<any> }) => (
         <div className="flex items-center justify-center gap-2">
           <button
@@ -314,7 +383,7 @@ const TableMatching = (props: Props) => {
             onClick={() => handleDetail(row.original.id, selectedJobId)}
           >
             <FiTarget className="text-indigo-600 dark:text-indigo-400" />
-            <span>Analysis</span>
+            <span>{t.analysisBtn}</span>
           </button>
         </div>
       ),
@@ -326,7 +395,7 @@ const TableMatching = (props: Props) => {
       <div className="px-4 pt-6 mt-2">
         <div className="font-medium text-xl p-4 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg shadow-sm">
           <h4 className="animate-pulse text-center text-blue-500">
-            Loading...
+            {t.loading}
           </h4>
         </div>
       </div>
@@ -336,7 +405,7 @@ const TableMatching = (props: Props) => {
   if (isError) {
     return (
       <h4 className="text-center text-red-500 font-medium text-xl">
-        System error, please try again later!
+        {t.errorSystem}
       </h4>
     );
   }
@@ -356,15 +425,15 @@ const TableMatching = (props: Props) => {
         reset();
         toast.success(
           isSelective
-            ? "Selected candidates matched successfully"
-            : "Candidate matching successful"
+            ? t.selectiveSuccess
+            : t.matchingSuccess
         );
       };
 
       const onError = (error: any) => {
         setLoadingMatching(false);
         toast.error(
-          isSelective ? "Selected matching failed" : "Candidate matching failed"
+          isSelective ? t.selectiveError : t.matchingError
         );
       };
 
@@ -430,14 +499,14 @@ const TableMatching = (props: Props) => {
       {
         onError: (error: any) => {
           console.log("Matching error:", error.response.status);
-          toast.error("Matching failed");
+          toast.error(language === 'VI' ? 'Phân tích thất bại' : "Matching failed");
         },
         onSuccess: async () => {
           setIsOpenModalAdd(false);
           setInputs([]);
           refetch();
           reset();
-          toast.success("Matching successful");
+          toast.success(language === 'VI' ? 'Phân tích thành công' : "Matching successful");
         },
       }
     );
@@ -464,7 +533,7 @@ const TableMatching = (props: Props) => {
           setInputs([]);
           refetch();
           reset();
-          toast.success("Update FAQ success");
+          toast.success(language === 'VI' ? 'Cập nhật thành công' : "Update FAQ success");
         },
       }
     );
@@ -536,14 +605,14 @@ const TableMatching = (props: Props) => {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight font-jakarta mb-1 flex items-center gap-3">
-            Matching Analysis
+            {t.title}
             {selectedCandidateIds.length > 0 && (
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300 animate-in fade-in zoom-in duration-300">
-                {selectedCandidateIds.length} SELECTED
+                {selectedCandidateIds.length} {t.selectedCount}
               </span>
             )}
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Analyze and rank candidates based on job requirements.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">{t.subtitle}</p>
         </div>
 
         <div className="flex items-center gap-4">
@@ -551,7 +620,7 @@ const TableMatching = (props: Props) => {
             <div>
               <Menu.Button className="inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all shadow-sm">
                 <FiBox className="text-indigo-500" />
-                <span>{selectedJobName}</span>
+                <span>{(selectedJobName === "Position Name" || selectedJobName === "Tên vị trí") ? t.selectJob : selectedJobName}</span>
                 <FiChevronDown className="text-slate-400 dark:text-slate-500" />
               </Menu.Button>
             </div>
@@ -567,7 +636,7 @@ const TableMatching = (props: Props) => {
             >
               <Menu.Items className="absolute right-0 z-[100] mt-2 w-64 origin-top-right rounded-2xl bg-white dark:bg-slate-800 shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700 focus:outline-none overflow-hidden p-1">
                 <div className="bg-slate-50 dark:bg-slate-900/50 px-3 py-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest border-b border-slate-100 dark:border-slate-800 mb-1">
-                  Select Job Position
+                  {t.selectJob}
                 </div>
                 {detailAllJobData?.map((item) => (
                   <Menu.Item key={item._id}>
@@ -610,8 +679,8 @@ const TableMatching = (props: Props) => {
                   <FiCheckSquare className="text-xl" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-white text-sm font-bold">{selectedCandidateIds.length} Candidates Selected</span>
-                  <span className="text-slate-400 text-[10px] uppercase tracking-wider font-semibold">Ready for AI Matching</span>
+                  <span className="text-white text-sm font-bold">{selectedCandidateIds.length} {t.candidatesSelected}</span>
+                  <span className="text-slate-400 text-[10px] uppercase tracking-wider font-semibold">{t.readyForAI}</span>
                 </div>
               </div>
 
@@ -621,7 +690,7 @@ const TableMatching = (props: Props) => {
                   className="px-4 py-2 text-xs font-bold text-slate-400 hover:text-rose-400 transition-colors flex items-center gap-2"
                 >
                   <FiSquare className="text-sm" />
-                  <span>Deselect</span>
+                  <span>{t.deselect}</span>
                 </button>
                 <div className="w-px h-6 bg-slate-700/50 mx-1" />
                 <button
@@ -630,7 +699,7 @@ const TableMatching = (props: Props) => {
                   className="bg-indigo-500 hover:bg-indigo-400 text-white px-6 py-2.5 rounded-xl text-xs font-black flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
                 >
                   {loadingMatching ? <FiLoader className="animate-spin" /> : <FiZap className="text-indigo-200" />}
-                  <span>RUN ANALYSIS ({selectedCandidateIds.length})</span>
+                  <span>{t.runAnalysis} ({selectedCandidateIds.length})</span>
                 </button>
               </div>
             </div>
@@ -693,11 +762,11 @@ const TableMatching = (props: Props) => {
                     as="h3"
                     className="text-center text-lg font-medium leading-6 text-gray-900"
                   >
-                    Notification
+                    {t.notification}
                   </Dialog.Title>
                   <div className="mt-4">
                     <p className="text-sm text-gray-500">
-                      Are you sure you want to delete this job?
+                      {t.deleteConfirm}
                     </p>
                   </div>
 
@@ -707,14 +776,14 @@ const TableMatching = (props: Props) => {
                       className="mr-2 inline-flex justify-center rounded-md border border-transparent bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                       onClick={() => confirmDeleteFAQ()}
                     >
-                      Yes
+                      {t.yes}
                     </button>
                     <button
                       type="button"
                       className="inline-flex justify-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                       onClick={closeModal}
                     >
-                      No
+                      {t.no}
                     </button>
                   </div>
                 </Dialog.Panel>
@@ -755,7 +824,7 @@ const TableMatching = (props: Props) => {
                     as="h3"
                     className="text-center text-lg font-medium leading-6 text-gray-900"
                   >
-                    Create New Job
+                    {language === 'VI' ? 'Tạo vị trí mới' : 'Create New Job'}
                   </Dialog.Title>
                   <form
                     className="w-full"
@@ -764,7 +833,7 @@ const TableMatching = (props: Props) => {
                     <div className="grid gap-4 mb-4 sm:grid-cols-2 sm:gap-6 sm:mb-5 mt-8">
                       <div className="sm:col-span-2">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                          Job Name
+                          {language === 'VI' ? 'Tên vị trí' : 'Job Name'}
                         </label>
                         <input
                           type="text"
@@ -776,7 +845,7 @@ const TableMatching = (props: Props) => {
                     <div className="grid gap-4 mb-4 sm:grid-cols-2 sm:gap-6 sm:mb-5">
                       <div className="sm:col-span-2">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                          Job Description
+                          {language === 'VI' ? 'Mô tả công việc' : 'Job Description'}
                         </label>
                         <input
                           type="text"
@@ -791,14 +860,14 @@ const TableMatching = (props: Props) => {
                         type="submit"
                         className="mr-2 inline-flex justify-center rounded-md border border-transparent bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                       >
-                        Yes
+                        {t.yes}
                       </button>
                       <button
                         type="button"
                         className="inline-flex justify-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                         onClick={closeModal}
                       >
-                        No
+                        {t.no}
                       </button>
                     </div>
                   </form>
@@ -848,7 +917,7 @@ const TableMatching = (props: Props) => {
                     as="h3"
                     className="text-center text-lg font-medium leading-6 text-gray-900"
                   >
-                    Update Job
+                    {language === 'VI' ? 'Cập nhật vị trí' : 'Update Job'}
                   </Dialog.Title>
                 </Dialog.Panel>
               </Transition.Child>
