@@ -14,13 +14,17 @@ interface ContextTheme {
   isDarkMode: boolean;
   setIsDarkMode: Dispatch<SetStateAction<boolean>>;
   toggleDarkMode: () => void;
+  language: 'EN' | 'VI';
+  setLanguage: Dispatch<SetStateAction<'EN' | 'VI'>>;
 }
 
 // Create a context with default values
 const GlobalContext = createContext<ContextTheme>({
   isDarkMode: false,
-  setIsDarkMode: (): boolean => false, // Incorrect return type, should be (): void
-  toggleDarkMode: (): void => {},
+  setIsDarkMode: () => { },
+  toggleDarkMode: (): void => { },
+  language: 'EN',
+  setLanguage: () => { },
 });
 
 // ContextProvider component to manage state and effects
@@ -30,6 +34,13 @@ export const ContextProvider = ({ children }: any) => {
     const storedValue =
       typeof window !== "undefined" ? localStorage.getItem("isDarkMode") : null;
     return storedValue ? JSON.parse(storedValue) : false;
+  });
+
+  // State to track language
+  const [language, setLanguage] = useState<'EN' | 'VI'>(() => {
+    const storedValue =
+      typeof window !== "undefined" ? localStorage.getItem("language") : null;
+    return (storedValue === 'VI' || storedValue === 'EN') ? storedValue : 'EN';
   });
 
   // Function to toggle dark mode
@@ -42,17 +53,24 @@ export const ContextProvider = ({ children }: any) => {
     if (typeof window !== "undefined") {
       localStorage.setItem("isDarkMode", JSON.stringify(isDarkMode));
       if (isDarkMode) {
-        document.documentElement.classList.add("dark"); // Apply dark mode class
+        document.documentElement.classList.add("dark");
       } else {
-        document.documentElement.classList.remove("dark"); // Remove dark mode class
+        document.documentElement.classList.remove("dark");
       }
     }
   }, [isDarkMode]);
 
+  // Effect to update language in local storage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("language", language);
+    }
+  }, [language]);
+
   // Provide the context to the children components
   return (
     <GlobalContext.Provider
-      value={{ isDarkMode, setIsDarkMode, toggleDarkMode }}
+      value={{ isDarkMode, setIsDarkMode, toggleDarkMode, language, setLanguage }}
     >
       {children}
     </GlobalContext.Provider>
