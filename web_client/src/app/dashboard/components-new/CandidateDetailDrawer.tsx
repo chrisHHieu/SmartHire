@@ -6,6 +6,7 @@ import {
   FiBriefcase, FiAward, FiTarget, FiGlobe, FiCheckCircle,
   FiUser, FiCpu, FiTrendingUp, FiZap
 } from "react-icons/fi";
+import { useGlobalContext } from "@/app/context/ContextProvider";
 
 interface CandidateDetailProps {
   candidate: {
@@ -65,15 +66,92 @@ interface CandidateDetailProps {
 type TabType = 'overview' | 'experience' | 'skills' | 'ai_insights';
 
 export default function CandidateDetailDrawer({ candidate, onClose }: CandidateDetailProps) {
+  const { language } = useGlobalContext();
   const [activeTab, setActiveTab] = useState<TabType>('overview');
+
+  const translations = {
+    EN: {
+      tabs: {
+        overview: "Overview",
+        experience: "Experience",
+        skills: "Skills & Certs",
+        aiAnalysis: "AI Analysis"
+      },
+      sidebar: {
+        profile: "Candidate Profile",
+        email: "Email",
+        phone: "Phone",
+        address: "Address",
+        birthday: "Birthday",
+        cvFile: "CV File"
+      },
+      overview: {
+        summary: "Executive Summary",
+        education: "Education",
+        highlights: "Highlights",
+        noEdu: "No education data"
+      },
+      experience: {
+        present: "Present"
+      },
+      skills: {
+        capabilities: "Core Capabilities",
+        certs: "Certifications",
+        expires: "Expires"
+      },
+      aiInsight: {
+        analysis: "Match Analysis",
+        processing: "AI is still processing the detailed traits for this candidate...",
+        competencyBreakdown: "Comprehensive competency breakdown available soon..."
+      }
+    },
+    VI: {
+      tabs: {
+        overview: "Tổng quan",
+        experience: "Kinh nghiệm",
+        skills: "Kỹ năng & Chứng chỉ",
+        aiAnalysis: "Phân tích AI"
+      },
+      sidebar: {
+        profile: "Hồ sơ ứng viên",
+        email: "Email",
+        phone: "Số điện thoại",
+        address: "Địa chỉ",
+        birthday: "Ngày sinh",
+        cvFile: "Tệp tin CV"
+      },
+      overview: {
+        summary: "Tóm tắt hồ sơ",
+        education: "Học vấn",
+        highlights: "Điểm nổi bật",
+        noEdu: "Không có dữ liệu học vấn"
+      },
+      experience: {
+        present: "Hiện tại"
+      },
+      skills: {
+        capabilities: "Năng lực cốt lõi",
+        certs: "Chứng chỉ",
+        expires: "Hết hạn"
+      },
+      aiInsight: {
+        analysis: "Phân tích độ phù hợp",
+        processing: "Hệ thống AI đang xử lý các đặc điểm chi tiết của ứng viên này...",
+        competencyBreakdown: "Bảng phân tích năng lực chi tiết sẽ sớm có mặt..."
+      }
+    }
+  };
+
+  const t = translations[language];
+
   const displayName = candidate.full_name || candidate.candidate_name;
   const displayPhone = candidate.phone || candidate.phone_number;
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: <FiUser /> },
-    { id: 'experience', label: 'Experience', icon: <FiBriefcase /> },
-    { id: 'skills', label: 'Skills & Certs', icon: <FiTarget /> },
-    { id: 'ai_insights', label: 'AI Analysis', icon: <FiCpu /> },
+    { id: 'overview', label: t.tabs.overview, icon: <FiUser /> },
+    { id: 'experience', label: t.tabs.experience, icon: <FiBriefcase /> },
+    { id: 'skills', label: t.tabs.skills, icon: <FiTarget /> },
+    { id: 'ai_insights', label: t.tabs.aiAnalysis, icon: <FiCpu /> },
   ];
 
   return (
@@ -118,7 +196,7 @@ export default function CandidateDetailDrawer({ candidate, onClose }: CandidateD
                     className="relative w-32 h-32 rounded-[2rem] object-cover border-4 border-white dark:border-slate-800 shadow-xl"
                   />
                 ) : (
-                  <div className="relative w-32 h-32 rounded-[2rem] bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-white text-5xl font-black shadow-xl">
+                  <div className="relative w-32 h-32 rounded-[2rem] bg-indigo-600 dark:bg-indigo-500 flex items-center justify-center text-white text-5xl font-black shadow-xl border-4 border-white dark:border-slate-800">
                     {displayName.charAt(0).toUpperCase()}
                   </div>
                 )}
@@ -129,15 +207,15 @@ export default function CandidateDetailDrawer({ candidate, onClose }: CandidateD
                   {displayName}
                 </h2>
                 <p className="text-sm font-bold text-indigo-500 dark:text-indigo-400 uppercase tracking-widest">
-                  Candidate Profile
+                  {t.sidebar.profile}
                 </p>
               </div>
 
               <div className="space-y-4 pt-4">
-                <ContactItem icon={<FiMail />} label="Email" value={candidate.email} />
-                <ContactItem icon={<FiPhone />} label="Phone" value={displayPhone} />
-                {candidate.address && <ContactItem icon={<FiMapPin />} label="Address" value={candidate.address} />}
-                {candidate.date_of_birth && <ContactItem icon={<FiCalendar />} label="Birthday" value={candidate.date_of_birth} />}
+                <ContactItem icon={<FiMail />} label={t.sidebar.email} value={candidate.email} />
+                <ContactItem icon={<FiPhone />} label={t.sidebar.phone} value={displayPhone} />
+                {candidate.address && <ContactItem icon={<FiMapPin />} label={t.sidebar.address} value={candidate.address} />}
+                {candidate.date_of_birth && <ContactItem icon={<FiCalendar />} label={t.sidebar.birthday} value={candidate.date_of_birth} />}
               </div>
 
               <div className="mt-auto pt-6 border-t border-slate-200 dark:border-slate-800">
@@ -146,7 +224,7 @@ export default function CandidateDetailDrawer({ candidate, onClose }: CandidateD
                     <FiFileText />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase">CV File</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase">{t.sidebar.cvFile}</p>
                     <p className="text-xs font-semibold text-slate-600 dark:text-slate-300 truncate">{candidate.cv_name}</p>
                   </div>
                 </div>
@@ -193,7 +271,7 @@ export default function CandidateDetailDrawer({ candidate, onClose }: CandidateD
                         {candidate.summary && (
                           <div className="p-8 rounded-[2rem] bg-gradient-to-br from-indigo-50/50 to-white dark:from-slate-900 dark:to-slate-900 border border-indigo-100 dark:border-indigo-900/30">
                             <h3 className="flex items-center gap-2 text-sm font-black text-slate-800 dark:text-slate-200 uppercase tracking-widest mb-4">
-                              <FiZap className="text-amber-500" /> Executive Summary
+                              <FiZap className="text-amber-500" /> {t.overview.summary}
                             </h3>
                             <p className="text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-medium italic">
                               "{candidate.summary}"
@@ -202,7 +280,7 @@ export default function CandidateDetailDrawer({ candidate, onClose }: CandidateD
                         )}
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <InfoCard title="Education" icon={<FiAward className="text-emerald-500" />}>
+                          <InfoCard title={t.overview.education} icon={<FiAward className="text-emerald-500" />}>
                             {candidate.structured_education && candidate.structured_education.length > 0 ? (
                               <ul className="space-y-4">
                                 {candidate.structured_education.map((edu, i) => (
@@ -223,10 +301,10 @@ export default function CandidateDetailDrawer({ candidate, onClose }: CandidateD
                                   </li>
                                 ))}
                               </ul>
-                            ) : <p className="text-slate-400 italic text-sm">No education data</p>}
+                            ) : <p className="text-slate-400 italic text-sm">{t.overview.noEdu}</p>}
                           </InfoCard>
 
-                          <InfoCard title="Highlights" icon={<FiTrendingUp className="text-rose-500" />}>
+                          <InfoCard title={t.overview.highlights} icon={<FiTrendingUp className="text-rose-500" />}>
                             <div className="flex flex-wrap gap-2 pt-2">
                               {candidate.job_recommended?.map((job, i) => (
                                 <span key={i} className="px-3 py-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-lg text-xs font-bold border border-emerald-100 dark:border-emerald-800/50 uppercase">
@@ -254,7 +332,7 @@ export default function CandidateDetailDrawer({ candidate, onClose }: CandidateD
                               <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
                                 <h4 className="text-lg font-bold text-slate-900 dark:text-white font-jakarta tracking-tight flex-1">{exp.job_title}</h4>
                                 <span className="text-[10px] font-bold py-1.5 px-3 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-full border border-indigo-100 dark:border-indigo-800/50 uppercase tracking-wider h-fit whitespace-nowrap flex-shrink-0 shadow-sm mt-1 md:mt-0">
-                                  {exp.start_date} — {exp.end_date || 'Present'}
+                                  {exp.start_date} — {exp.end_date || t.experience.present}
                                 </span>
                               </div>
                               <p className="text-sm font-bold text-slate-600 dark:text-slate-300 flex items-center gap-2 mb-4">
@@ -273,7 +351,7 @@ export default function CandidateDetailDrawer({ candidate, onClose }: CandidateD
 
                     {activeTab === 'skills' && (
                       <div className="space-y-10">
-                        <SectionTitle title="Core Capabilities" icon={<FiTarget />} />
+                        <SectionTitle title={t.skills.capabilities} icon={<FiTarget />} />
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                           {candidate.structured_skills?.map((skill, i) => (
                             <div key={i} className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-indigo-200 dark:hover:border-indigo-800 transition-colors shadow-sm flex items-center justify-between">
@@ -289,13 +367,13 @@ export default function CandidateDetailDrawer({ candidate, onClose }: CandidateD
 
                         {candidate.structured_certifications && candidate.structured_certifications.length > 0 && (
                           <>
-                            <SectionTitle title="Certifications" icon={<FiAward />} />
+                            <SectionTitle title={t.skills.certs} icon={<FiAward />} />
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                               {candidate.structured_certifications.map((cert, i) => (
                                 <div key={i} className="p-5 rounded-2xl bg-gradient-to-r from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 border border-slate-100 dark:border-slate-800 flex flex-col gap-1">
                                   <h4 className="font-black text-slate-900 dark:text-white leading-tight">{cert.name}</h4>
                                   <p className="text-xs font-bold text-indigo-500 uppercase">{cert.issuer}</p>
-                                  <p className="text-[10px] font-medium text-slate-400 mt-2">{cert.issue_date} {cert.expiration_date && `• Expires ${cert.expiration_date}`}</p>
+                                  <p className="text-[10px] font-medium text-slate-400 mt-2">{cert.issue_date} {cert.expiration_date && `• ${t.skills.expires} ${cert.expiration_date}`}</p>
                                 </div>
                               ))}
                             </div>
@@ -312,10 +390,10 @@ export default function CandidateDetailDrawer({ candidate, onClose }: CandidateD
                           </div>
                           <div className="relative z-10">
                             <h3 className="flex items-center gap-3 text-lg font-black uppercase tracking-[0.2em] text-indigo-400 mb-6">
-                              <FiTrendingUp /> Match Analysis
+                              <FiTrendingUp /> {t.aiInsight.analysis}
                             </h3>
                             <p className="text-2xl font-medium leading-relaxed italic text-white/90">
-                              "{candidate.comment || "AI is still processing the detailed traits for this candidate..."}"
+                              "{candidate.comment || t.aiInsight.processing}"
                             </p>
 
 
@@ -323,7 +401,7 @@ export default function CandidateDetailDrawer({ candidate, onClose }: CandidateD
                         </div>
 
                         <div className="p-8 rounded-[2rem] border-2 border-dashed border-slate-100 dark:border-slate-800 text-center">
-                          <p className="text-slate-400 text-sm font-medium italic">Comprehensive competency breakdown available soon...</p>
+                          <p className="text-slate-400 text-sm font-medium italic">{t.aiInsight.competencyBreakdown}</p>
                         </div>
                       </div>
                     )}
