@@ -7,6 +7,7 @@ import { Controller, useForm } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
 import UseTableTanStackSSR from "@/app/hooks/react-table/useTableTanStackSSR";
 import { Dialog, Transition } from "@headlessui/react";
+import { useGlobalContext } from "@/app/context/ContextProvider";
 import {
   useJobDetailData,
   useFAQData,
@@ -39,6 +40,7 @@ interface DataFormModel {
 }
 
 const TableJobs = (props: Props) => {
+  const { language } = useGlobalContext();
   const [jobId, setJobId] = React.useState<string>("id");
   const jobDetailQuery = useJobDetailData(jobId);
   const [isOpenDrawer, setIsOpenDrawer] = React.useState<boolean>(false);
@@ -131,6 +133,67 @@ const TableJobs = (props: Props) => {
     defaultValues: { job_name: detailFAQData?.job_name },
   });
 
+  const translations = {
+    EN: {
+      title: "Job Management",
+      subtitle: "Create and manage your open positions easily.",
+      newPosition: "New Position",
+      jobPosition: "Job Position",
+      description: "Description",
+      datePosted: "Date Posted",
+      actions: "Actions",
+      details: "Details",
+      edit: "Edit Position",
+      delete: "Delete Position",
+      noDescription: "No description",
+      readMore: "Read More",
+      showLess: "Show Less",
+      notification: "Notification",
+      confirmDelete: "Are you sure you want to delete this job?",
+      yes: "Yes",
+      no: "No",
+      createNewJob: "Create New Job",
+      updateJob: "Update Job",
+      positionName: "Position Name",
+      jobDescription: "Job Description",
+      errorSystem: "System error, please try again later!",
+      deleteSuccess: "Delete job successfully",
+      createSuccess: "Create new job successfully",
+      updateSuccess: "Update job successfully",
+      placeholderName: "e.g. AI Engineer"
+    },
+    VI: {
+      title: "Quản lý tuyển dụng",
+      subtitle: "Tạo và quản lý các vị trí tuyển dụng của bạn một cách chuyên nghiệp.",
+      newPosition: "Thêm vị trí mới",
+      jobPosition: "Vị trí tuyển dụng",
+      description: "Mô tả chi tiết",
+      datePosted: "Ngày đăng",
+      actions: "Thao tác",
+      details: "Chi tiết",
+      edit: "Chỉnh sửa",
+      delete: "Xoá vị trí",
+      noDescription: "Chưa có mô tả",
+      readMore: "Xem thêm",
+      showLess: "Thu gọn",
+      notification: "Thông báo",
+      confirmDelete: "Bạn có chắc chắn muốn xoá vị trí tuyển dụng này không?",
+      yes: "Đồng ý",
+      no: "Huỷ bỏ",
+      createNewJob: "Tạo vị trí tuyển dụng mới",
+      updateJob: "Cập nhật vị trí tuyển dụng",
+      positionName: "Tên vị trí",
+      jobDescription: "Mô tả công việc",
+      errorSystem: "Lỗi hệ thống, vui lòng thử lại sau!",
+      deleteSuccess: "Xoá vị trí thành công",
+      createSuccess: "Tạo vị trí thành công",
+      updateSuccess: "Cập nhật vị trí thành công",
+      placeholderName: "Ví dụ: Kỹ sư AI"
+    }
+  };
+
+  const t = translations[language];
+
   const handlePageOnchange = (event: any, newPage: number) => {
     setCurrentPage(newPage);
   };
@@ -151,7 +214,7 @@ const TableJobs = (props: Props) => {
       ),
     }),
     columnHelper.display({
-      header: "Job Position",
+      header: t.jobPosition,
       cell: ({ row }: { row: Row<any> }) => (
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
@@ -162,10 +225,10 @@ const TableJobs = (props: Props) => {
       ),
     }),
     columnHelper.accessor("job_description", {
-      header: "Description",
+      header: t.description,
       cell: ({ row }: { row: Row<any> }) => {
         const [showFull, setShowFull] = React.useState(false);
-        if (!row.original.job_description) return <span className="text-slate-300 italic text-xs">No description</span>;
+        if (!row.original.job_description) return <span className="text-slate-300 italic text-xs">{t.noDescription}</span>;
 
         let plainText = row.original.job_description.replace(/<[^>]*>?/gm, '');
         const content = showFull ? plainText : plainText.slice(0, 150);
@@ -180,7 +243,7 @@ const TableJobs = (props: Props) => {
                 className="mt-1 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 uppercase tracking-widest"
                 onClick={() => setShowFull(!showFull)}
               >
-                {showFull ? "Show Less" : "Read More"}
+                {showFull ? t.showLess : t.readMore}
               </button>
             )}
           </div>
@@ -188,27 +251,27 @@ const TableJobs = (props: Props) => {
       },
     }),
     columnHelper.accessor("created_at", {
-      header: "Date Posted",
+      header: t.datePosted,
       cell: (props) => (
         <div className="flex items-center justify-center gap-2 text-slate-500 dark:text-slate-400 font-medium text-xs">
           <FiCalendar className="opacity-70 text-slate-400 dark:text-slate-500" />
-          <span>{new Date(props.getValue()).toLocaleDateString('en-US')}</span>
+          <span>{new Date(props.getValue()).toLocaleDateString(language === 'VI' ? 'vi-VN' : 'en-US')}</span>
         </div>
       ),
     }),
     columnHelper.display({
-      header: "Actions",
+      header: t.actions,
       cell: ({ row }: { row: Row<any> }) => (
         <div className="flex items-center justify-center gap-2">
           <button
-            title="Edit Position"
+            title={t.edit}
             className="w-8 h-8 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-200 dark:hover:border-indigo-500 hover:shadow-sm transition-all shadow-xs"
             onClick={() => handleModifyFAQ(row.original._id)}
           >
             <FiEdit2 className="text-xs" />
           </button>
           <button
-            title="Delete Position"
+            title={t.delete}
             className="w-8 h-8 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:border-rose-200 dark:hover:border-rose-500 hover:shadow-sm transition-all shadow-xs"
             onClick={() => handleDeleteFAQ(row.original._id)}
           >
@@ -219,7 +282,7 @@ const TableJobs = (props: Props) => {
             onClick={() => handleDetail(row.original._id)}
           >
             <FiEye className="text-sm" />
-            <span>Details</span>
+            <span>{t.details}</span>
           </button>
         </div>
       ),
@@ -240,7 +303,7 @@ const TableJobs = (props: Props) => {
   if (isError) {
     return (
       <h4 className="text-center text-red-500 font-medium text-xl">
-        System error, please try again later!
+        {t.errorSystem}
       </h4>
     );
   }
@@ -272,12 +335,12 @@ const TableJobs = (props: Props) => {
         onError: (error: any) => {
           console.log("Delete FAQ error:", error.response.status);
           setIsOpenModalDelete(false);
-          toast.error("Delete job failed");
+          toast.error(language === 'VI' ? 'Xoá vị trí thất bại' : "Delete job failed");
         },
         onSuccess: async () => {
           setIsOpenModalDelete(false);
           refetch();
-          toast.success("Delete job successfully");
+          toast.success(t.deleteSuccess);
         },
       }
     );
@@ -315,7 +378,7 @@ const TableJobs = (props: Props) => {
         onError: (error: any) => {
           setLoading(false);
           console.log("Create New Job error:", error.response.status);
-          toast.error("Create new job failed");
+          toast.error(language === 'VI' ? 'Tạo vị trí thất bại' : "Create new job failed");
         },
         onSuccess: async () => {
           setLoading(false);
@@ -323,7 +386,7 @@ const TableJobs = (props: Props) => {
           setInputs([]);
           refetch();
           reset();
-          toast.success("Create new job successfully");
+          toast.success(t.createSuccess);
         },
       }
     );
@@ -355,7 +418,7 @@ const TableJobs = (props: Props) => {
         onError: (error: any) => {
           setLoading(false);
           console.log("Update FAQ error:", error.response.status);
-          toast.error("Update job failed");
+          toast.error(language === 'VI' ? 'Cập nhật thất bại' : "Update job failed");
         },
         onSuccess: async () => {
           setLoading(false);
@@ -363,7 +426,7 @@ const TableJobs = (props: Props) => {
           setInputs([]);
           refetch();
           reset();
-          toast.success("Update job successfully");
+          toast.success(t.updateSuccess);
         },
       }
     );
@@ -428,9 +491,9 @@ const TableJobs = (props: Props) => {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight font-jakarta mb-1">
-            Job Management
+            {t.title}
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Create and manage your open positions easily.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">{t.subtitle}</p>
         </div>
 
         <button
@@ -439,7 +502,7 @@ const TableJobs = (props: Props) => {
           onClick={() => handleAddFAQ()}
         >
           <FiPlus className="text-lg" />
-          <span>New Position</span>
+          <span>{t.newPosition}</span>
         </button>
       </div>
       <UseTableTanStackSSR columns={columns} data={data.results} />
@@ -487,11 +550,11 @@ const TableJobs = (props: Props) => {
                     as="h3"
                     className="text-center text-lg font-medium leading-6 text-gray-900"
                   >
-                    Notification
+                    {t.notification}
                   </Dialog.Title>
                   <div className="mt-4">
                     <p className="text-sm text-gray-500">
-                      Are you sure you want to delete this job?
+                      {t.confirmDelete}
                     </p>
                   </div>
 
@@ -501,14 +564,14 @@ const TableJobs = (props: Props) => {
                       className="mr-2 inline-flex justify-center rounded-md border border-transparent bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                       onClick={() => confirmDeleteFAQ()}
                     >
-                      Yes
+                      {t.yes}
                     </button>
                     <button
                       type="button"
                       className="inline-flex justify-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                       onClick={closeModal}
                     >
-                      No
+                      {t.no}
                     </button>
                   </div>
                 </Dialog.Panel>
@@ -557,7 +620,7 @@ const TableJobs = (props: Props) => {
                     as="h3"
                     className="text-center text-lg font-medium leading-6 text-gray-900"
                   >
-                    Create New Job
+                    {t.createNewJob}
                   </Dialog.Title>
                   <form
                     className="w-full"
@@ -566,12 +629,12 @@ const TableJobs = (props: Props) => {
                     <div className="grid gap-4 mb-4 sm:grid-cols-2 sm:gap-6 sm:mb-5 mt-8">
                       <div className="sm:col-span-2">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                          Position Name
+                          {t.positionName}
                         </label>
                         <input
                           type="text"
                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                          placeholder="AI Engineer"
+                          placeholder={t.placeholderName}
                           {...register("job_name")}
                         />
                       </div>
@@ -579,7 +642,7 @@ const TableJobs = (props: Props) => {
                     <div className="grid gap-4 mb-4 sm:grid-cols-2 sm:gap-6 sm:mb-5">
                       <div className="sm:col-span-2 h-72">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                          Job Description
+                          {t.jobDescription}
                         </label>
                         {/* <textarea
                           className="h-60 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 resize-none"
@@ -674,7 +737,7 @@ const TableJobs = (props: Props) => {
                             type="submit"
                             className="mr-2 inline-flex justify-center rounded-md border border-transparent bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                           >
-                            Yes
+                            {t.yes}
                           </button>
 
                           <button
@@ -682,7 +745,7 @@ const TableJobs = (props: Props) => {
                             className="inline-flex justify-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                             onClick={closeModal}
                           >
-                            No
+                            {t.no}
                           </button>
                         </>
                       ) : (
@@ -691,7 +754,7 @@ const TableJobs = (props: Props) => {
                             disabled={true}
                             className="mr-2 inline-flex justify-center rounded-md border border-transparent bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-blue-500"
                           >
-                            Yes
+                            {t.yes}
                           </button>
 
                           <button
@@ -700,7 +763,7 @@ const TableJobs = (props: Props) => {
                             className="inline-flex justify-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-red-500"
                             onClick={closeModal}
                           >
-                            No
+                            {t.no}
                           </button>
                         </>
                       )}
@@ -744,7 +807,7 @@ const TableJobs = (props: Props) => {
                     as="h3"
                     className="text-center text-lg font-medium leading-6 text-gray-900"
                   >
-                    Update Job
+                    {t.updateJob}
                   </Dialog.Title>
                   <form
                     className="w-full"
@@ -753,7 +816,7 @@ const TableJobs = (props: Props) => {
                     <div className="grid gap-4 mb-4 sm:grid-cols-2 sm:gap-6 sm:mb-5 mt-8">
                       <div className="sm:col-span-2">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                          Position Name
+                          {t.positionName}
                         </label>
                         <input
                           type="text"
@@ -766,7 +829,7 @@ const TableJobs = (props: Props) => {
                     <div className="grid gap-4 mb-4 sm:grid-cols-2 sm:gap-6 sm:mb-5">
                       <div className="sm:col-span-2">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                          Job Description
+                          {t.jobDescription}
                         </label>
                         <Controller
                           name="job_description"
@@ -859,7 +922,7 @@ const TableJobs = (props: Props) => {
                             type="submit"
                             className="mr-2 inline-flex justify-center rounded-md border border-transparent bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                           >
-                            Yes
+                            {t.yes}
                           </button>
 
                           <button
@@ -867,7 +930,7 @@ const TableJobs = (props: Props) => {
                             className="inline-flex justify-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                             onClick={closeModal}
                           >
-                            No
+                            {t.no}
                           </button>
                         </>
                       ) : (
@@ -876,7 +939,7 @@ const TableJobs = (props: Props) => {
                             disabled={true}
                             className="mr-2 inline-flex justify-center rounded-md border border-transparent bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-blue-500"
                           >
-                            Yes
+                            {t.yes}
                           </button>
 
                           <button
@@ -885,7 +948,7 @@ const TableJobs = (props: Props) => {
                             className="inline-flex justify-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-red-500"
                             onClick={closeModal}
                           >
-                            No
+                            {t.no}
                           </button>
                         </>
                       )}
