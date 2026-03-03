@@ -3,6 +3,8 @@ import React, { PropsWithChildren, useState } from "react";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiSearch, FiBell, FiPlus, FiCommand, FiHome, FiUsers, FiFilter, FiSun, FiMoon, FiZap } from "react-icons/fi";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 import Link from "next/link";
 import { useGlobalContext } from "@/app/context/ContextProvider";
@@ -76,7 +78,7 @@ const DashboardLayoutNew = (props: PropsWithChildren) => {
               <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full shadow-sm animate-pulse" />
             </div>
             <div className="flex flex-col">
-              <span className="text-[22px] font-black tracking-tighter text-indigo-700 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-white dark:via-slate-200 dark:to-slate-400 leading-none">
+              <span className="text-[22px] font-black tracking-tighter text-indigo-700 dark:text-white leading-none">
                 SmartHire
               </span>
               <span className="text-[10px] font-black text-slate-500 dark:text-indigo-400 uppercase tracking-[0.25em] leading-none mt-2 ml-0.5">
@@ -297,6 +299,19 @@ const DashboardLayoutNew = (props: PropsWithChildren) => {
           </div>
         )}
       </AnimatePresence>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme={isDarkMode ? "dark" : "light"}
+      />
     </div>
   );
 };

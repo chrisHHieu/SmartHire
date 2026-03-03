@@ -245,18 +245,6 @@ const TableCandidates = (props2: Props) => {
 
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss={false}
-        draggable
-        pauseOnHover
-        theme="dark"
-      />
 
       <UseTableTanStackSSR columns={columns} data={data!.results} />
       {/* Pagination */}
@@ -341,7 +329,6 @@ const TableCandidates = (props2: Props) => {
         </Dialog>
       </Transition>
 
-      <ToastContainer />
     </>
   );
 };

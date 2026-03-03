@@ -476,18 +476,6 @@ const TableJobs = (props: Props) => {
 
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss={false}
-        draggable
-        pauseOnHover
-        theme="dark"
-      />
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight font-jakarta mb-1">
