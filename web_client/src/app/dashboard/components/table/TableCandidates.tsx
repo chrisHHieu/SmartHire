@@ -12,6 +12,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { ToastContainer, toast } from "react-toastify";
 import CandidateDetailDrawer from "../../components-new/CandidateDetailDrawer";
 import { FiUser, FiMail, FiPhone, FiFileText, FiTrash2, FiEye, FiCheckCircle } from "react-icons/fi";
+import { useGlobalContext } from "@/app/context/ContextProvider";
 
 type Props = {
   data: CandidateResponseModel;
@@ -19,6 +20,7 @@ type Props = {
 };
 
 const TableCandidates = (props2: Props) => {
+  const { language } = useGlobalContext();
   const [currentPage, setCurrentPage] = React.useState<number>(0);
   const [pageSize, setPageSize] = React.useState<number>(10);
   const [isOpenDrawer, setIsOpenDrawer] = React.useState<boolean>(false);
@@ -78,16 +80,49 @@ const TableCandidates = (props2: Props) => {
         onError: async (error: any) => {
           console.log("Delete file error:", error.response.status);
           setIsOpenModalDelete(false);
-          toast.error("Delete profile failed");
+          toast.error(t.deleteError);
         },
         onSuccess: async () => {
           setIsOpenModalDelete(false);
           props2.refetch();
-          toast.success("Delete profile successful");
+          toast.success(t.deleteSuccess);
         },
       }
     );
   };
+
+  const translations = {
+    EN: {
+      candidate: "Candidate",
+      contactCV: "Contact & CV",
+      recommended: "Recommended For",
+      actions: "Actions",
+      profile: "Profile",
+      delete: "Delete Profile",
+      confirmDelete: "Are you sure you want to delete this profile? This action cannot be undone.",
+      cancel: "Cancel",
+      deleteBtn: "Delete",
+      deleteSuccess: "Delete profile successful",
+      deleteError: "Delete profile failed",
+      notAvailable: "N/A"
+    },
+    VI: {
+      candidate: "Ứng viên",
+      contactCV: "Liên hệ & CV",
+      recommended: "Vị trí đề xuất",
+      actions: "Thao tác",
+      profile: "Hồ sơ",
+      delete: "Xoá hồ sơ",
+      confirmDelete: "Bạn có chắc chắn muốn xoá hồ sơ này không? Hành động này không thể hoàn tác.",
+      cancel: "Huỷ bỏ",
+      deleteBtn: "Xoá",
+      deleteSuccess: "Xoá hồ sơ thành công",
+      deleteError: "Xoá hồ sơ thất bại",
+      notAvailable: "Không có"
+    }
+  };
+
+  const t = translations[language];
 
   // Column Definitions - Premium Refactoring
   const columnHelper = createColumnHelper<CandidateModel>();
@@ -101,7 +136,7 @@ const TableCandidates = (props2: Props) => {
       ),
     }),
     columnHelper.display({
-      header: "Candidate",
+      header: t.candidate,
       cell: ({ row }: { row: Row<any> }) => (
         <div className="flex items-center gap-3 text-left">
           {row.original.avatar_url ? (
@@ -126,12 +161,12 @@ const TableCandidates = (props2: Props) => {
       ),
     }),
     columnHelper.display({
-      header: "Contact & CV",
+      header: t.contactCV,
       cell: ({ row }: { row: Row<any> }) => (
         <div className="flex flex-col items-start gap-1">
           <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-600 dark:text-slate-400">
             <FiPhone className="text-indigo-500 text-[10px]" />
-            <span>{row.original.phone_number || "N/A"}</span>
+            <span>{row.original.phone_number || t.notAvailable}</span>
           </div>
           <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-400 dark:text-slate-500 italic">
             <FiFileText className="text-[10px]" />
@@ -141,7 +176,7 @@ const TableCandidates = (props2: Props) => {
       ),
     }),
     columnHelper.accessor("job_recommended", {
-      header: "Recommended For",
+      header: t.recommended,
       cell: (props: any) => {
         const recommendedJobs = props.getValue();
         if (!recommendedJobs) return <span className="text-slate-300 italic text-xs">-</span>;
@@ -160,11 +195,11 @@ const TableCandidates = (props2: Props) => {
       },
     }),
     columnHelper.display({
-      header: "Actions",
+      header: t.actions,
       cell: ({ row }: { row: Row<any> }) => (
         <div className="flex items-center justify-center gap-2">
           <button
-            title="Delete Candidate"
+            title={t.delete}
             className="w-8 h-8 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:border-rose-200 dark:hover:border-rose-500 hover:shadow-sm transition-all shadow-xs"
             onClick={() => showModalDelete(row.original._id, row.original.cv_name)}
           >
@@ -178,7 +213,7 @@ const TableCandidates = (props2: Props) => {
             }}
           >
             <FiEye className="text-sm" />
-            <span>Profile</span>
+            <span>{t.profile}</span>
           </button>
         </div>
       ),
@@ -275,12 +310,11 @@ const TableCandidates = (props2: Props) => {
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
-                    Delete Profile
+                    {t.delete}
                   </Dialog.Title>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">
-                      Are you sure you want to delete this profile? This action
-                      cannot be undone.
+                      {t.confirmDelete}
                     </p>
                   </div>
 
@@ -290,14 +324,14 @@ const TableCandidates = (props2: Props) => {
                       className="inline-flex justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
                       onClick={closeModal}
                     >
-                      Cancel
+                      {t.cancel}
                     </button>
                     <button
                       type="button"
                       className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
                       onClick={handleDeleteFile}
                     >
-                      Delete
+                      {t.deleteBtn}
                     </button>
                   </div>
                 </Dialog.Panel>
