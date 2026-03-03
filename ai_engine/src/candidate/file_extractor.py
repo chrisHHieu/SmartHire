@@ -57,7 +57,7 @@ class FileExtractor:
             # Parse document with LandingAI ADE (ONE call for both text + figures)
             parse_response = self.ade_client.parse(
                 document=Path(pdf_path),
-                model="dpt-2-mini",
+                model="dpt-2",
             )
 
             # === Extract text from all chunks ===
