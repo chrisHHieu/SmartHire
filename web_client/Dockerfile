@@ -43,9 +43,6 @@ COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 
-# Copy public assets if they exist
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-
 # Set proper ownership
 RUN chown -R nextjs:nodejs /app
 

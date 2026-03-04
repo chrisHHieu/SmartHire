@@ -15,7 +15,7 @@ services:
     networks:
       - backend_net
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -44,13 +44,7 @@ services:
     networks:
       - backend_net
     healthcheck:
-      test:
-        [
-          "CMD",
-          "python",
-          "-c",
-          "import urllib.request; urllib.request.urlopen('http://localhost:7000/')",
-        ]
+      test: [ "CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:7000/healthz')" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -84,13 +78,7 @@ services:
     networks:
       - backend_net
     healthcheck:
-      test:
-        [
-          "CMD",
-          "python",
-          "-c",
-          "import urllib.request; urllib.request.urlopen('http://localhost:5000/')",
-        ]
+      test: [ "CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -114,15 +102,7 @@ services:
     networks:
       - frontend_net
     healthcheck:
-      test:
-        [
-          "CMD",
-          "wget",
-          "--no-verbose",
-          "--tries=1",
-          "--spider",
-          "http://localhost:3000/",
-        ]
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000/" ]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -154,7 +134,7 @@ services:
       - frontend_net
       - backend_net
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/"]
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:80/" ]
       interval: 30s
       timeout: 5s
       retries: 3

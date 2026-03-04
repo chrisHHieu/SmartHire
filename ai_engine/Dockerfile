@@ -39,11 +39,12 @@ ENV PATH="/app/.venv/bin:$PATH"
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONIOENCODING=utf-8 \
-    UV_COMPILE_BYTECODE=1
+    UV_COMPILE_BYTECODE=1 \
+    UV_NO_CACHE=1
 
-# Create non-root user for security
+# Create non-root user with home directory (uv needs writable home)
 RUN groupadd --system --gid 1001 appgroup \
-    && useradd --system --uid 1001 --gid appgroup --no-create-home appuser
+    && useradd --system --uid 1001 --gid appgroup --create-home appuser
 
 # Copy app source code
 COPY . /app
