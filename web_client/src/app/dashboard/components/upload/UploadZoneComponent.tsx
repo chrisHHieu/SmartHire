@@ -4,7 +4,7 @@ import { FaRegFilePdf } from "react-icons/fa";
 import Image from "next/image";
 import { Button, Typography } from "@mui/material";
 import { useUploadFileData } from "@/app/hooks/react-query/management/file/useFilesUploadData";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { MdOutlineCloudUpload, MdClear } from "react-icons/md";
 import { FiUploadCloud, FiFileText } from "react-icons/fi";
 
@@ -80,18 +80,7 @@ const UploadZoneComponent = (props: Props) => {
 
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss={false}
-        draggable
-        pauseOnHover
-        theme="dark"
-      />
+
       <div id="upload-zone" className="w-full">
         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
           <div className="p-1">

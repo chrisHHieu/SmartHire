@@ -9,7 +9,7 @@ import {
 } from "@/app/hooks/react-query/management/file/useFilesUploadData";
 import { TablePagination } from "@mui/material";
 import { Dialog, Transition } from "@headlessui/react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import CandidateDetailDrawer from "../../components-new/CandidateDetailDrawer";
 import { FiUser, FiMail, FiPhone, FiFileText, FiTrash2, FiEye, FiCheckCircle } from "react-icons/fi";
 import { useGlobalContext } from "@/app/context/ContextProvider";
