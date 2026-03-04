@@ -1,46 +1,62 @@
-# Builder stage: cài đặt dependencies bằng uv
+# ─────────────────────────────────────────
+# Builder stage: install dependencies with uv
+# ─────────────────────────────────────────
 FROM python:3.11-slim AS builder
 
 WORKDIR /app
 
-# Cài uv (Copy binary từ image chính thức của uv để cực nhanh)
+# Install uv from official image
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Cập nhật package và cài build tools
+# Install build tools
 RUN apt-get update && \
     apt-get install -y --no-install-recommends gcc python3-dev build-essential && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copy các file quản lý thư viện trước (để tận dụng Docker Cache)
+# Copy lock files first (leverage Docker layer cache)
 COPY pyproject.toml uv.lock ./
 
-# Cài đặt thư viện (Dùng --frozen để ép buộc dùng đúng file lock)
+# Install dependencies only (--frozen: enforce lock file)
 RUN uv sync --frozen --no-cache --no-dev --no-install-project
 
-# Final stage: tối giản
+# ─────────────────────────────────────────
+# Final stage: minimal runtime image
+# ─────────────────────────────────────────
 FROM python:3.11-slim
 
 WORKDIR /app
 
-# Cài uv (Copy binary từ builder stage)
+# Install uv binary
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Copy virtual environment từ builder stage
+# Copy virtual environment from builder
 COPY --from=builder /app/.venv /app/.venv
 
-# Update PATH để dùng virtualenv
+# Update PATH to use virtualenv
 ENV PATH="/app/.venv/bin:$PATH"
 
-# Set environment
+# Python environment settings
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONIOENCODING=utf-8 \
     UV_COMPILE_BYTECODE=1
 
-# Copy app
+# Create non-root user for security
+RUN groupadd --system --gid 1001 appgroup \
+    && useradd --system --uid 1001 --gid appgroup --no-create-home appuser
+
+# Copy app source code
 COPY . /app
 
-# Chmod cho entrypoint
-RUN chmod +x ./entrypoint.sh
+# Create log and data directories with proper ownership
+RUN mkdir -p /app/logs /app/candidate_cv \
+    && chmod +x /app/entrypoint.sh \
+    && chown -R appuser:appgroup /app
+
+# Expose AI engine port
+EXPOSE 7000
+
+# Switch to non-root user
+USER appuser
 
 ENTRYPOINT ["/app/entrypoint.sh"]

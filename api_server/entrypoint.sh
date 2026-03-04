@@ -1,10 +1,16 @@
 #!/bin/sh
+set -e
 
-echo "Start run entrypoint script..."
+echo "========================================"
+echo " SmartHire API Server — Starting..."
+echo " Environment : ${APP_ENV:-production}"
+echo " Host        : ${API_HOST:-0.0.0.0}"
+echo " Port        : ${API_PORT:-5000}"
+echo " Workers     : ${WORKERS:-4}"
+echo "========================================"
 
-echo "Enviroment:" $APP_ENV
-
-if [ "$APP_ENV" = "local" ]; then
-    echo "Run app with uvicorn server using uv..."
-    uv run uvicorn app.main:app --host $API_HOST --port $API_PORT --timeout-keep-alive 1200 --workers 4;
-fi
+exec uv run uvicorn app.main:app \
+    --host "${API_HOST:-0.0.0.0}" \
+    --port "${API_PORT:-5000}" \
+    --timeout-keep-alive 1200 \
+    --workers "${WORKERS:-4}"

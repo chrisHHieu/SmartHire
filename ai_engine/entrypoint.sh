@@ -1,4 +1,14 @@
 #!/bin/sh
+set -e
 
-echo "Run app with uvicorn server using uv..."
-uv run uvicorn app:app --port 7000 --host 0.0.0.0 --workers 1
+echo "========================================"
+echo " SmartHire AI Engine — Starting..."
+echo " Host        : 0.0.0.0"
+echo " Port        : ${AI_PORT:-7000}"
+echo " Workers     : ${WORKERS:-1}"
+echo "========================================"
+
+exec uv run uvicorn app:app \
+    --host 0.0.0.0 \
+    --port "${AI_PORT:-7000}" \
+    --workers "${WORKERS:-1}"

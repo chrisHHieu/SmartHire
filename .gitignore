@@ -1,7 +1,49 @@
-certificates
-nginx/log
+# ─────────────────────────────────────────
+#  OS & Editor
+# ─────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ─────────────────────────────────────────
+#  Logs & Media
+# ─────────────────────────────────────────
 *.log
 *.mp4
+nginx/log/
+
+# ─────────────────────────────────────────
+#  Secrets & Environment variables
+#  ⚠️  KHÔNG bao giờ commit .env thật!
+# ─────────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# Service-level .env files
+ai_engine/.env
+ai_engine/.env.*
+!ai_engine/.env.example
+
+api_server/.env
+api_server/.env.*
+!api_server/.env.example
+
+web_client/.env
+web_client/.env.*
+!web_client/.env.example
+
+# ─────────────────────────────────────────
+#  SSL Certificates
+# ─────────────────────────────────────────
+certificates/
+nginx/ssl/
+*.pem
+*.crt
+*.key
+
+# ─────────────────────────────────────────
+#  Misc
+# ─────────────────────────────────────────
 NOTE.md
-.DS_Store
-backend/.env*
