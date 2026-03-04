@@ -49,5 +49,6 @@ nginx/ssl/
 NOTE.md
 __pycache__/
 mcp_server/test_db.py
+mcp_server/main.py
 mcp_server/__pycache__/
 **/__pycache__/
