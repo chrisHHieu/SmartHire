@@ -4,6 +4,10 @@ An AI screening pipeline for recruitment: upload CVs, upload a job description, 
 
 The interesting part is not the score, it is how the score is weighted. A fixed rubric ("education 20%, experience 30%...") is wrong for most jobs: a warehouse role and a backend role should not be scored the same way. SmartHire derives the weights from the job description itself before it scores anyone.
 
+![Candidate matching screen: ranked applicants with an overall match score, per-criterion scores and the weights derived from the job description](docs/assets/candidate-matching.png)
+
+*Design mockup of the matching view. Every value on it is returned by the API: overall `score`, per-criterion `score` and `comment`, `weight_analysis.dynamic_weights` and `ai_confidence`. The dashboard template in `web_client/` looks different.*
+
 ## How a match is produced
 
 ```
